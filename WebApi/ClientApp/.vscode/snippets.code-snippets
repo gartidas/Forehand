@@ -1,0 +1,53 @@
+{
+  "React FC": {
+    "prefix": ["rcp"],
+    "body": [
+      "interface ${1:Component}Props {${2}}",
+      "",
+      "const ${1:Component} = ({${3}}: ${1:Component}Props) => {",
+      "  return <${div}>${1:Component} works</${div}>",
+      "}",
+      "",
+      "export default ${1:Component}",
+      ""
+    ],
+    "description": "React FC."
+  },
+
+  "Styled component": {
+    "prefix": ["scp"],
+    "body": [
+      "import styled from 'styled-components'",
+      "",
+      "export const ${1:Wrapper} = styled.${2:div}``",
+      "${3}",
+      ""
+    ],
+    "description": "Styled component."
+  },
+
+  "Context Provider": {
+    "prefix": ["ctxp"],
+    "body": [
+      "import { createContext, FC, useContext } from 'react'",
+      "",
+      "interface I${1:Name}ContextValue {}",
+      "",
+      "const ${1:Name}Context = createContext<I${1:Name}ContextValue>(null!)",
+      "export const use${1:Name} = () => useContext(${1:Name}Context)",
+      "",
+      "const ${1:Name}Provider: FC = ({ children }) => {",
+      "const value: I${1:Name}ContextValue = {}",
+      "",
+      "return <${1:Name}Context.Provider value={value}>{children}</${1:Name}Context.Provider>",
+      "}",
+      "",
+      "export default ${1:Name}Provider"
+    ]
+  },
+
+  "useState": {
+    "prefix": ["state"],
+    "body": ["const [$1, set${1/(.*)/${1:/capitalize}/}] = useState($2)"]
+  }
+}
