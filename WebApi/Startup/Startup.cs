@@ -2,10 +2,12 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using WebApi.Persistence;
 
 namespace WebApi.Startup
 {
@@ -28,6 +30,11 @@ namespace WebApi.Startup
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/build");
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            services.AddDbContext<ForehandContext>(options =>
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("ForehandContext"),
+                   builder => builder.MigrationsAssembly(typeof(ForehandContext).Assembly.FullName)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Domain.Common;
+using WebApi.Domain.Users;
 
 namespace WebApi.Persistence
 {
@@ -15,6 +17,12 @@ namespace WebApi.Persistence
         {
             _mediator = mediator;
         }
+
+        public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<Trainer> Trainers { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -33,7 +41,22 @@ namespace WebApi.Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.RemovePluralizingTableNameConvention();
             base.OnModelCreating(builder);
+
+            builder.Entity<Employee>().HasOne(x => x.IdentityUser).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Trainer>().HasOne(x => x.IdentityUser).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Customer>().HasOne(x => x.IdentityUser).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
+        }
+
+    }
+
+    internal static class PersistenceExtensions
+    {
+        public static void RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
+        {
+            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
+                entity.SetTableName(entity.DisplayName());
         }
     }
 }
