@@ -1,13 +1,20 @@
-﻿using WebApi.Domain.Common;
+﻿using System.Collections.Generic;
 
-namespace WebApi.Domain.Users
+namespace WebApi.Domain
 {
     public class Customer : Entity<string>
     {
+        private List<Reservation> _reservations;
+        private List<GiftCard> _giftCards;
+        private List<Order> _orders;
+
         public Customer(User identityUser)
         {
             IdentityUser = identityUser;
             Id = identityUser.Id;
+            _reservations = new();
+            _giftCards = new();
+            _orders = new();
         }
 
         private Customer()
@@ -15,5 +22,21 @@ namespace WebApi.Domain.Users
         }
 
         public User IdentityUser { get; private set; }
+
+        public SubscriptionCard SubscriptionCard { get; private set; }
+
+        public string SubscriptionCardId { get; private set; }
+
+        public IReadOnlyCollection<Reservation> Reservations => _reservations;
+
+        public IReadOnlyCollection<GiftCard> GiftCards => _giftCards;
+
+        public IReadOnlyCollection<Order> Orders => _orders;
+
+        public void AddSubscriptionCard(SubscriptionCard subscriptionCard)
+        {
+            SubscriptionCard = subscriptionCard;
+            SubscriptionCardId = subscriptionCard.Id;
+        }
     }
 }

@@ -1,26 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WebApi.Domain.Common;
 
-namespace WebApi.Domain.Users
+namespace WebApi.Domain
 {
     public class Trainer : Entity<string>
     {
-        public Trainer(string bio, double price, User identityUser)
+        private List<Reservation> _reservations;
+        private List<int> _ratings;
+
+        public Trainer(string bio, double reservationPrice, User identityUser)
         {
             RegistrationConfirmed = false;
-            _ratings = new List<int>();
             Bio = bio;
-            Price = price;
+            ReservationPrice = reservationPrice;
             IdentityUser = identityUser;
             Id = identityUser.Id;
+            _ratings = new();
+            _reservations = new();
         }
 
         private Trainer()
         {
         }
-
-        private List<int> _ratings;
 
         public User IdentityUser { get; private set; }
 
@@ -28,9 +29,11 @@ namespace WebApi.Domain.Users
 
         public string Bio { get; private set; }
 
-        public double Rating { get => _ratings.Count > 0 ? _ratings.Average() : 0.0; }
+        public double ReservationPrice { get; private set; }
 
-        public double Price { get; private set; }
+        public double Rating => _ratings.Count > 0 ? _ratings.Average() : 0.0;
+
+        public IReadOnlyCollection<Reservation> Reservations => _reservations;
 
         public void ConfirmRegistration() => RegistrationConfirmed = true;
 
@@ -39,7 +42,7 @@ namespace WebApi.Domain.Users
         public void UpdateProfile(string bio, double price)
         {
             Bio = bio;
-            Price = price;
+            ReservationPrice = price;
         }
     }
 }

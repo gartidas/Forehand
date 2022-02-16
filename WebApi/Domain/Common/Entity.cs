@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WebApi.Domain.Common
+namespace WebApi.Domain
 {
     public abstract class Entity<TId> : BaseEntity, IEquatable<Entity<TId>>
         where TId : IEquatable<TId>

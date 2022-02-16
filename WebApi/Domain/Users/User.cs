@@ -2,7 +2,7 @@
 using System;
 using WebApi.Common.Constants;
 
-namespace WebApi.Domain.Users
+namespace WebApi.Domain
 {
     public class User : IdentityUser<string>
     {
@@ -27,5 +27,4 @@ namespace WebApi.Domain.Users
 
         public void Logout() => RefreshToken = null;
     }
-
 }

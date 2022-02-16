@@ -4,8 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WebApi.Domain.Common;
-using WebApi.Domain.Users;
+using WebApi.Domain;
 
 namespace WebApi.Persistence
 {
@@ -17,6 +16,22 @@ namespace WebApi.Persistence
         {
             _mediator = mediator;
         }
+
+        public DbSet<ConsumerGoods> ConsumerGoods { get; set; }
+
+        public DbSet<Court> Courts { get; set; }
+
+        public DbSet<GiftCard> GiftCards { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Reservation> Reservations { get; set; }
+
+        public DbSet<ReservationSportsGear> ReservationSportsGears { get; set; }
+
+        public DbSet<SportsGear> SportsGear { get; set; }
+
+        public DbSet<SubscriptionCard> SubscriptionCards { get; set; }
 
         public DbSet<Employee> Employees { get; set; }
 
@@ -44,9 +59,48 @@ namespace WebApi.Persistence
             builder.RemovePluralizingTableNameConvention();
             base.OnModelCreating(builder);
 
-            builder.Entity<Employee>().HasOne(x => x.IdentityUser).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Trainer>().HasOne(x => x.IdentityUser).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Customer>().HasOne(x => x.IdentityUser).WithMany().IsRequired().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Employee>().HasOne(x => x.IdentityUser).WithMany().IsRequired();
+            builder.Entity<Trainer>().HasOne(x => x.IdentityUser).WithMany().IsRequired();
+            builder.Entity<Customer>().HasOne(x => x.IdentityUser).WithMany().IsRequired();
+
+            builder.Entity<ConsumerGoods>(cg =>
+            {
+                cg.HasOne(x => x.Employee).WithMany(x => x.ConsumerGoods).OnDelete(DeleteBehavior.NoAction);
+                cg.HasOne(x => x.Order).WithMany(x => x.ConsumerGoods).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<GiftCard>(gc =>
+            {
+                gc.HasOne(x => x.Customer).WithMany(x => x.GiftCards).OnDelete(DeleteBehavior.NoAction);
+                gc.HasOne(x => x.Order).WithMany(x => x.GiftCards).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<Order>(o =>
+            {
+                o.HasOne(x => x.Customer).WithMany(x => x.Orders).OnDelete(DeleteBehavior.NoAction);
+                o.HasOne(x => x.Employee).WithMany(x => x.Orders).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<Reservation>(r =>
+            {
+                r.HasOne(x => x.Court).WithMany(x => x.Reservations).IsRequired();
+                r.HasOne(x => x.Customer).WithMany(x => x.Reservations).IsRequired();
+                r.HasOne(x => x.Trainer).WithMany(x => x.Reservations).OnDelete(DeleteBehavior.NoAction);
+                r.HasOne(x => x.Order).WithMany(x => x.Reservations).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<ReservationSportsGear>(rsg =>
+            {
+                rsg.HasKey(x => new { x.ReservationId, x.SportsGearId });
+                rsg.HasOne(x => x.Reservation).WithMany(x => x.SportsGear);
+                rsg.HasOne(x => x.SportsGear).WithMany(x => x.Reservations).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<SubscriptionCard>(sc =>
+            {
+                sc.HasOne(x => x.Customer).WithOne(x => x.SubscriptionCard).HasForeignKey<SubscriptionCard>(x => x.CustomerId).IsRequired();
+                sc.HasOne(x => x.Order).WithOne(x => x.SubscriptionCard).HasForeignKey<SubscriptionCard>(x => x.OrderId).IsRequired().OnDelete(DeleteBehavior.NoAction);
+            });
         }
 
     }
