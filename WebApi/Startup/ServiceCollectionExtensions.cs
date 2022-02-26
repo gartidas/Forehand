@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
 using WebApi.Common.Options;
+using WebApi.Services;
+using WebApi.Services.Interfaces;
 
 namespace WebApi.Startup
 {
@@ -122,6 +124,8 @@ namespace WebApi.Startup
                 });
             });
 
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ICurrentUserService, CurrentUserService>();
             return services;
         }
     }

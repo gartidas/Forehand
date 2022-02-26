@@ -6,13 +6,15 @@ namespace WebApi.Domain
 {
     public class User : IdentityUser<string>
     {
-        public User(string email, string givenName, string surname, string phoneNumber)
+        public User(string email, string givenName, string surname, string phoneNumber, RoleEnum role)
         {
             Id = Guid.NewGuid().ToString();
             Email = email;
+            UserName = email;
             GivenName = givenName;
             Surname = surname;
             PhoneNumber = phoneNumber;
+            Role = role;
         }
 
         public string GivenName { get; private set; }
