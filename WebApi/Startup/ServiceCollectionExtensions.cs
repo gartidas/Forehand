@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -10,12 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
 using WebApi.Common.Options;
+using WebApi.Domain;
+using WebApi.Persistence;
 using WebApi.Services;
 using WebApi.Services.Interfaces;
 
 namespace WebApi.Startup
 {
-
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddSwagger(this IServiceCollection services)
@@ -69,11 +71,24 @@ namespace WebApi.Startup
 
             services.AddSingleton(tokenValidationParams);
 
+            services.AddIdentity<User, IdentityRole>(o =>
+            {
+                o.Password.RequiredLength = 6;
+                o.Password.RequireDigit = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.User.RequireUniqueEmail = true;
+            })
+              .AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<ForehandContext>()
+              .AddDefaultTokenProviders();
+
+            // NOTE: must come after AddIdentity so it does not override DefaultAuthScheme
             services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
             })
             .AddJwtBearer(o =>
             {
@@ -102,26 +117,22 @@ namespace WebApi.Startup
                 o.SaveToken = true;
             });
 
-
             services.AddAuthorization(options =>
             {
                 var roleNames = new[] { RoleEnum.BasicUser, RoleEnum.Employee, RoleEnum.Trainer, RoleEnum.Admin };
 
-                services.AddAuthorization(options =>
+                foreach (var requiredRole in roleNames)
                 {
-                    foreach (var requiredRole in roleNames)
+                    options.AddPolicy(requiredRole.ToString(), x => x.RequireAssertion(ctx =>
                     {
-                        options.AddPolicy(requiredRole.ToString(), x => x.RequireAssertion(ctx =>
-                        {
-                            var userRole = ctx.User.Claims.SingleOrDefault(x => x.Type == CustomClaims.Role)?.Value;
+                        var userRole = ctx.User.Claims.SingleOrDefault(x => x.Type == CustomClaims.Role)?.Value;
 
-                            if (!Enum.TryParse<RoleEnum>(userRole, out var userRoleEnum))
-                                return false;
+                        if (!Enum.TryParse<RoleEnum>(userRole, out var userRoleEnum))
+                            return false;
 
-                            return userRoleEnum == requiredRole || userRoleEnum == RoleEnum.Admin;
-                        }));
-                    }
-                });
+                        return userRoleEnum == requiredRole || userRoleEnum == RoleEnum.Admin;
+                    }));
+                }
             });
 
             services.AddTransient<IAuthService, AuthService>();
@@ -129,5 +140,4 @@ namespace WebApi.Startup
             return services;
         }
     }
-
 }

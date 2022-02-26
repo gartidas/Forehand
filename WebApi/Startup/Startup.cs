@@ -43,19 +43,6 @@ namespace WebApi.Startup
                options.UseSqlServer(
                    Configuration.GetConnectionString("ForehandContext"),
                    builder => builder.MigrationsAssembly(typeof(ForehandContext).Assembly.FullName)));
-
-            services.AddIdentity<User, IdentityRole>(o =>
-             {
-                 o.Password.RequiredLength = 6;
-                 o.Password.RequireDigit = false;
-                 o.Password.RequireUppercase = false;
-                 o.Password.RequireLowercase = false;
-                 o.Password.RequireNonAlphanumeric = false;
-                 o.User.RequireUniqueEmail = true;
-             })
-          .AddRoles<IdentityRole>()
-          .AddEntityFrameworkStores<ForehandContext>()
-          .AddDefaultTokenProviders();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
