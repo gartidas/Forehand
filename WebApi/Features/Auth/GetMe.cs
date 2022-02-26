@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,8 +67,6 @@ namespace WebApi.Features.Auth
             public string GivenName { get; set; }
 
             public string Surname { get; set; }
-
-            public DateTime? LastLogin { get; set; }
 
             public RoleEnum Role { get; set; }
 
