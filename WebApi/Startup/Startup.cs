@@ -1,8 +1,8 @@
 using Autofac;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +12,6 @@ using System.Reflection;
 using WebApi.Common.Behaviours;
 using WebApi.Common.Behaviours.Authorization;
 using WebApi.Common.Exceptions;
-using WebApi.Domain;
 using WebApi.Persistence;
 using WebApi.Startup.ExceptionHandling;
 
@@ -29,6 +28,7 @@ namespace WebApi.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddSwagger();
             services.AddAuth(Configuration);
             services.AddHttpClient();

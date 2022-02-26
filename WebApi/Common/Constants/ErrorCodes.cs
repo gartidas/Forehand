@@ -10,7 +10,7 @@
         public const string MinLength = nameof(MinLength);
         public const string MaxLength = nameof(MaxLength);
         public const string MustBeUnique = nameof(MustBeUnique);
-        public const string MustNotBeEmpty = nameof(MustBeUnique);
+        public const string MustNotBeEmpty = nameof(MustNotBeEmpty);
         public const string InvalidLoginCredentials = nameof(InvalidLoginCredentials);
     }
 }
