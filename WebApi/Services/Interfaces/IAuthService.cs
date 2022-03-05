@@ -16,7 +16,7 @@ namespace WebApi.Services.Interfaces
 
         public Task<Result<(string accessToken, string refreshToken)>> RefreshJwt(string refreshToken, CancellationToken cancellationToken);
 
-        public Task<bool> IsEmailUnique(string email, CancellationToken cancellationToken);
+        public Task<bool> IsEmailUnique(string email);
 
         public Task<User> GetUser(string userId);
     }

@@ -70,6 +70,9 @@ namespace Fiesta.Application.Features.Auth
                     .MinimumLength(2).WithErrorCode(ErrorCodes.MinLength).WithState(_ => new { MinLength = 2 })
                     .MaximumLength(30).WithErrorCode(ErrorCodes.MaxLength).WithState(_ => new { MaxLength = 30 });
 
+                RuleFor(x => x.PhoneNumber)
+                   .NotEmpty().WithErrorCode(ErrorCodes.Required);
+
                 RuleFor(x => x.Surname)
                     .NotEmpty().WithErrorCode(ErrorCodes.Required)
                     .MinimumLength(2).WithErrorCode(ErrorCodes.MinLength).WithState(_ => new { MinLength = 2 })
@@ -80,9 +83,9 @@ namespace Fiesta.Application.Features.Auth
                 RuleFor(x => x.ReservationPrice).Must((command, reservationPrice) => NotBeEmptyForTrainer(command, reservationPrice)).WithErrorCode(ErrorCodes.MustNotBeEmpty);
             }
 
-            private async Task<bool> BeUnique(string email, CancellationToken cancellationToken)
+            private async Task<bool> BeUnique(string email, CancellationToken _)
             {
-                return await _authService.IsEmailUnique(email, cancellationToken);
+                return await _authService.IsEmailUnique(email);
             }
 
             private bool NotBeEmptyForTrainer(Command command, double? reservationPrice)

@@ -1,12 +1,13 @@
-import { ChakraProvider, Box, theme } from '@chakra-ui/react'
+import { Toaster } from 'react-hot-toast'
+import Routes from './Routes'
+import { toastOptions } from './services/toastService'
 
 const App = () => {
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign='start' fontSize='3xl'>
-        WORKS
-      </Box>
-    </ChakraProvider>
+    <>
+      <Toaster toastOptions={toastOptions} />
+      <Routes />
+    </>
   )
 }
 

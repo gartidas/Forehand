@@ -1,6 +1,5 @@
 ﻿using Fiesta.Application.Features.Auth;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -63,9 +62,9 @@ namespace WebApi.Services
             return Result.Success(newUser.Id);
         }
 
-        public async Task<Result<(string accessToken, string refreshToken)>> Login(string emailOrUsername, string password, CancellationToken cancellationToken)
+        public async Task<Result<(string accessToken, string refreshToken)>> Login(string email, string password, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(emailOrUsername.Trim());
+            var user = await _userManager.FindByEmailAsync(email.Trim());
 
             if (user is null)
                 return Result<(string, string)>.Failure(ErrorCodes.InvalidLoginCredentials);
@@ -73,6 +72,9 @@ namespace WebApi.Services
             var passValid = await _userManager.CheckPasswordAsync(user, password);
             if (!passValid)
                 return Result<(string, string)>.Failure(ErrorCodes.InvalidLoginCredentials);
+
+            if (!await IsRegistrationConfirmed(user.Id, user.Role, cancellationToken))
+                return Result<(string, string)>.Failure(ErrorCodes.RegistrationNotConfirmed);
 
             return Result.Success(await Login(user, cancellationToken));
         }
@@ -122,17 +124,29 @@ namespace WebApi.Services
             return Result.Success(await Login(appUser, cancellationToken));
         }
 
-        public async Task<bool> IsEmailUnique(string email, CancellationToken cancellationToken)
+        public async Task<bool> IsEmailUnique(string email)
         {
-            var emailExists = await _db.Employees.AsQueryable().Where(x => x.IdentityUser.Email == email).AnyAsync(cancellationToken);
-            if (!emailExists)
-                emailExists = await _db.Trainers.AsQueryable().Where(x => x.IdentityUser.Email == email).AnyAsync(cancellationToken);
-            if (!emailExists)
-                emailExists = await _db.Customers.AsQueryable().Where(x => x.IdentityUser.Email == email).AnyAsync(cancellationToken);
-            return !emailExists;
+            var user = await _userManager.FindByEmailAsync(email);
+            return user is null;
         }
 
         public async Task<User> GetUser(string userId) => await _userManager.FindByIdAsync(userId);
+
+        public async Task<bool> IsRegistrationConfirmed(string userId, RoleEnum role, CancellationToken cancellationToken)
+        {
+            if (role == RoleEnum.Employee)
+            {
+                var employee = await _db.Employees.SingleOrNotFoundAsync(x => x.Id == userId, cancellationToken);
+                return employee.RegistrationConfirmed;
+            }
+            else if (role == RoleEnum.Trainer)
+            {
+                var trainer = await _db.Trainers.SingleOrNotFoundAsync(x => x.Id == userId, cancellationToken);
+                return trainer.RegistrationConfirmed;
+            }
+            else
+                return true;
+        }
 
         private async Task<(string accessToken, string refreshToken)> Login(User user, CancellationToken cancellationToken)
         {
