@@ -1,6 +1,6 @@
 import { createContext, FC, useCallback, useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { ICurrentUser } from '../domainTypes'
+import { IUserExtended } from '../domainTypes'
 import * as authService from '../services/authService'
 
 export const IS_SIGNED_IN_LOCAL_STORAGE_KEY = 'FIESTA.is_signed_in'
@@ -14,10 +14,10 @@ type IAuthContextValue =
   | {
       isLoggedIn: true
       isLoading: boolean
-      currentUser: ICurrentUser
+      currentUser: IUserExtended
       logout: (shouldCallServer?: boolean) => Promise<void>
       fetchUser: () => Promise<void>
-      updateUser: (newValues: Partial<ICurrentUser>) => void
+      updateUser: (newValues: Partial<IUserExtended>) => void
     }
 
 const AuthContext = createContext<IAuthContextValue>(null!)
@@ -38,7 +38,7 @@ export const useAuthorizedUser = () => {
 
 const AuthProvider: FC = ({ children }) => {
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<ICurrentUser>()
+  const [user, setUser] = useState<IUserExtended>()
   const queryClient = useQueryClient()
   useRefreshToken(!!user)
 
@@ -78,7 +78,7 @@ const AuthProvider: FC = ({ children }) => {
   }, [])
 
   const updateUser = useCallback(
-    (newValues: Partial<ICurrentUser>) => {
+    (newValues: Partial<IUserExtended>) => {
       if (user) setUser({ ...user, ...newValues })
     },
     [user]

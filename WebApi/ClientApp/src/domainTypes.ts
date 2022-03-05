@@ -7,16 +7,19 @@ export type Validator<TFormValues = any, TValue = any> = (
 
 export type SubmitFormatter<T> = (values: T, form: UseFormMethods<T>) => Record<string, any>
 
-export interface ICurrentUser {
+export interface IUserExtended extends IUser {
+  phoneNumber: string
+  bio?: string
+  rating?: number
+  reservationPrice?: number
+}
+
+export interface IUser {
   id: string
   email: string
   givenName: string
   surname: string
   role: Role
-  phoneNumber: string
-  bio?: string
-  rating?: number
-  reservationPrice?: number
   registrationConfirmed?: boolean
 }
 

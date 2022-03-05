@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Reflection;
 using WebApi.Common.Behaviours;
 using WebApi.Common.Behaviours.Authorization;
@@ -53,7 +54,7 @@ namespace WebApi.Startup
                 .InstancePerLifetimeScope();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             app.UseHttpsRedirection();
             app.UseCustomExceptionHandlingMiddleware();
@@ -82,6 +83,8 @@ namespace WebApi.Startup
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            serviceProvider.CreateAdmin().GetAwaiter().GetResult();
         }
     }
 }

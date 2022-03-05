@@ -35,7 +35,9 @@ namespace WebApi.Domain
 
         public IReadOnlyCollection<Reservation> Reservations => _reservations;
 
-        public void ConfirmRegistration() => RegistrationConfirmed = true;
+        public IEnumerable<int> Ratings => _ratings;
+
+        public void ChangeRegistrationStatus(bool registrationConfirmed) => RegistrationConfirmed = registrationConfirmed;
 
         public void AddRating(int rating) => _ratings.Add(rating);
 

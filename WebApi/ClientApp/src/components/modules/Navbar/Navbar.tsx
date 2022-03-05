@@ -29,7 +29,7 @@ const Navbar = () => {
             display={{ base: 'none', md: 'block' }}
           />
           <NavButtons
-            buttons={isLoggedIn ? LoggedInNavButtons : LoggedOutNavButtons}
+            buttons={isLoggedIn ? LoggedInNavButtons[auth.currentUser.role] : LoggedOutNavButtons}
             isMobileNavbar={false}
           />
         </HStack>
@@ -57,7 +57,7 @@ const Navbar = () => {
       {isOpen ? (
         <Box pb={4} display={{ md: 'none' }}>
           <NavButtons
-            buttons={isLoggedIn ? LoggedInNavButtons : LoggedOutNavButtons}
+            buttons={isLoggedIn ? LoggedInNavButtons[auth.currentUser.role] : LoggedOutNavButtons}
             isMobileNavbar={true}
           />
         </Box>

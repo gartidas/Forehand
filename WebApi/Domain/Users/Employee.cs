@@ -28,6 +28,6 @@ namespace WebApi.Domain
 
         public IReadOnlyCollection<ConsumerGoods> ConsumerGoods => _consumerGoods;
 
-        public void ConfirmRegistration() => RegistrationConfirmed = true;
+        public void ChangeRegistrationStatus(bool registrationConfirmed) => RegistrationConfirmed = registrationConfirmed;
     }
 }
