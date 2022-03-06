@@ -1,4 +1,6 @@
 import { Flex, Text, useBreakpointValue, Image, ImageProps } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../contextProviders/AuthProvider'
 
 export const Icon = (props: ImageProps) => {
   return (
@@ -13,17 +15,21 @@ export const Icon = (props: ImageProps) => {
 }
 
 export const Logo = () => {
+  const { isLoggedIn } = useAuth()
   return (
-    <Flex alignItems={'center'}>
-      <Icon display={{ base: 'none', md: 'flex' }} />
-      <Text
-        marginLeft={2}
-        textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-        fontFamily={'heading'}
-        color={'primary'}
-      >
-        Forehand
-      </Text>
-    </Flex>
+    <Link to={isLoggedIn ? '/home' : '/'}>
+      <Flex alignItems={'center'}>
+        <Icon display={{ base: 'none', md: 'flex' }} />
+        <Text
+          marginLeft={2}
+          textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+          fontFamily='Shadows Into Light'
+          fontSize={{ base: '2xl', md: '3xl' }}
+          color={'primary'}
+        >
+          Forehand
+        </Text>
+      </Flex>
+    </Link>
   )
 }
