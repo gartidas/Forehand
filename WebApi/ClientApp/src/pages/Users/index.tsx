@@ -9,7 +9,7 @@ import UserItem from '../../components/elements/UserItem'
 import { useState } from 'react'
 import useDebounce from '../../utils/hooks/useDebounce'
 
-const Admin = () => {
+const Users = () => {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search)
   const { data, isLoading, error, refetch, isFetching } = useQuery<IUser[], IApiError>(
@@ -51,4 +51,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default Users

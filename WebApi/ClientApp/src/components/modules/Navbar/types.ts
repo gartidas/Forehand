@@ -15,7 +15,7 @@ export const EmployeeNavButtons: INabButtonProps[] = [{ label: 'Home', url: '/ho
 export const TrainerNavButtons: INabButtonProps[] = [{ label: 'Home', url: '/home' }]
 export const AdminNavButtons: INabButtonProps[] = [
   { label: 'Home', url: '/home' },
-  { label: 'Users', url: '/admin' }
+  { label: 'Users', url: '/users' }
 ]
 export const NoneNavButtons: INabButtonProps[] = []
 

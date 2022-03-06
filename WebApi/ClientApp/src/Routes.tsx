@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router'
 import DefaultLayout from './components/layouts/DefaultLayout'
 import ProtectedRoute from './components/layouts/ProtectedRoute'
-import Admin from './pages/Admin'
+import Users from './pages/Users'
 import Home from './pages/Home'
 import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
@@ -21,11 +21,11 @@ const Routes = () => {
         }
       />
       <Route
-        path='/admin'
+        path='/users'
         element={
           <ProtectedRoute>
             <DefaultLayout>
-              <Admin />
+              <Users />
             </DefaultLayout>
           </ProtectedRoute>
         }
