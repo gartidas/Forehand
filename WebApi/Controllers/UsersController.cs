@@ -22,33 +22,31 @@ namespace WebApi.Controllers
 
         [Authorize(nameof(RoleEnum.Admin))]
         [HttpGet("trainers-and-employees")]
-        public async Task<IEnumerable<GetTrainersAndEmployees.UserDto>> GetTrainersAndEmployees(string search, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<GetTrainersAndEmployees.UserDto>>> GetTrainersAndEmployees(string search, CancellationToken cancellationToken)
             => await Mediator.Send(new GetTrainersAndEmployees.Query() { Search = search }, cancellationToken);
 
         [Authorize(nameof(RoleEnum.Admin))]
         [HttpPatch("{id}/change-registration-status")]
-        public async Task<ActionResult> ChangeRegistrationStatus([FromRoute] string id, ChangeRegistrationStatusRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult> ChangeRegistrationStatus([FromRoute] string id, ChangeRegistrationStatus.Command command, CancellationToken cancellationToken)
         {
-            if (request.Role == RoleEnum.Trainer)
-            {
-                var trainer = await _db.Trainers.SingleOrNotFoundAsync(x => x.Id == id);
-                trainer.ChangeRegistrationStatus(request.RegistrationStatus);
-                await _db.SaveChangesAsync(cancellationToken);
-            }
-            if (request.Role == RoleEnum.Employee)
-            {
-                var employee = await _db.Employees.SingleOrNotFoundAsync(x => x.Id == id);
-                employee.ChangeRegistrationStatus(request.RegistrationStatus);
-                await _db.SaveChangesAsync(cancellationToken);
-            }
-
+            command.UserId = id;
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
 
-        public class ChangeRegistrationStatusRequest
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetUser.UserDto>> GetUser([FromRoute] string id, CancellationToken cancellationToken)
+           => await Mediator.Send(new GetUser.Query() { UserId = id, CurrentUserId = CurrentUserService.UserId }, cancellationToken);
+
+        [Authorize(nameof(RoleEnum.BasicUser))]
+        [HttpPatch("{id}/add-rating")]
+        public async Task<ActionResult> AddRating([FromRoute] string id, AddRating.Command command, CancellationToken cancellationToken)
         {
-            public RoleEnum Role { get; set; }
-            public bool RegistrationStatus { get; set; }
+            command.UserId = id;
+            command.CurrentUserId = CurrentUserService.UserId;
+            await Mediator.Send(command, cancellationToken);
+            return Ok();
         }
     }
 }

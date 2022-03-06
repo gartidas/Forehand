@@ -108,7 +108,7 @@ namespace WebApi.Persistence
                 sc.HasOne(x => x.Order).WithOne(x => x.SubscriptionCard).HasForeignKey<SubscriptionCard>(x => x.OrderId).IsRequired().OnDelete(DeleteBehavior.NoAction);
             });
 
-            builder.Entity<CustomerRatings>(cr =>
+            builder.Entity<CustomerRating>(cr =>
             {
                 cr.HasKey(x => new { x.RatedById, x.RatedTrainerId });
                 cr.HasOne(x => x.RatedBy).WithMany(x => x.RatedTrainers);

@@ -1,8 +1,8 @@
 ﻿namespace WebApi.Domain
 {
-    public class CustomerRatings
+    public class CustomerRating
     {
-        public CustomerRatings(Customer ratedBy, Trainer ratedTrainer)
+        public CustomerRating(Customer ratedBy, Trainer ratedTrainer)
         {
             RatedBy = ratedBy;
             RatedTrainer = ratedTrainer;
@@ -10,7 +10,7 @@
             RatedTrainerId = ratedTrainer.Id;
         }
 
-        private CustomerRatings()
+        private CustomerRating()
         {
         }
 

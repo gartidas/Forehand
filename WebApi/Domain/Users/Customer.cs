@@ -7,7 +7,7 @@ namespace WebApi.Domain
         private List<Reservation> _reservations;
         private List<GiftCard> _giftCards;
         private List<Order> _orders;
-        private List<CustomerRatings> _ratedTrainers;
+        private List<CustomerRating> _ratedTrainers;
 
         public Customer(User identityUser)
         {
@@ -35,7 +35,7 @@ namespace WebApi.Domain
 
         public IReadOnlyCollection<Order> Orders => _orders;
 
-        public IReadOnlyCollection<CustomerRatings> RatedTrainers => _ratedTrainers;
+        public IReadOnlyCollection<CustomerRating> RatedTrainers => _ratedTrainers;
 
         public void AddSubscriptionCard(SubscriptionCard subscriptionCard)
         {

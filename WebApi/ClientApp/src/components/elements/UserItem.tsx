@@ -21,7 +21,6 @@ const UserItem = ({ user, onButtonClick, ...rest }: UserItemProps) => {
     setChangingStatus(true)
     try {
       await api.patch(`/users/${user.id}/change-registration-status`, {
-        role: user.role,
         registrationStatus: !user.registrationConfirmed
       })
     } catch (err) {
