@@ -35,7 +35,7 @@ const FetchError = ({ error }: FetchErrorProps) => {
         <ModalBody>{getErrorMessage()}</ModalBody>
 
         <ModalFooter>
-          <Link to='/'>
+          <Link to='/home'>
             <Button variant='primary'>Go to home screen</Button>
           </Link>
         </ModalFooter>

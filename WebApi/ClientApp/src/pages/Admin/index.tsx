@@ -20,7 +20,7 @@ const Admin = () => {
   )
 
   if (error) return <FetchError error={error} />
-  if (isLoading || !data) return <Spinner thickness='4px' color='gray.500' size='xl' mt='30px' />
+  if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
 
   return (
     <>

@@ -61,12 +61,16 @@ const UserItem = ({ user, onButtonClick, ...rest }: UserItemProps) => {
         {user.registrationConfirmed ? (
           <>
             <CloseIcon color='red.300' marginRight={2} />
-            <Text color='red.300'>Decline</Text>
+            <Text color='red.300' display={{ base: 'none', md: 'block' }}>
+              Revoke registration
+            </Text>
           </>
         ) : (
           <>
             <CheckIcon color='green.300' marginRight={2} />
-            <Text color='green.300'>Accept</Text>
+            <Text color='green.300' display={{ base: 'none', md: 'block' }}>
+              Confirm registration
+            </Text>
           </>
         )}
       </Button>

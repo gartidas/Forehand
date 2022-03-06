@@ -7,6 +7,7 @@ namespace WebApi.Domain
     {
         private List<Reservation> _reservations;
         private List<int> _ratings;
+        private List<CustomerRatings> _ratedBy;
 
         public Trainer(string bio, double reservationPrice, User identityUser)
         {
@@ -17,6 +18,7 @@ namespace WebApi.Domain
             Id = identityUser.Id;
             _ratings = new();
             _reservations = new();
+            _ratedBy = new();
         }
 
         private Trainer()
@@ -35,11 +37,20 @@ namespace WebApi.Domain
 
         public IReadOnlyCollection<Reservation> Reservations => _reservations;
 
+        public IReadOnlyCollection<CustomerRatings> RatedBy => _ratedBy;
+
         public IEnumerable<int> Ratings => _ratings;
 
         public void ChangeRegistrationStatus(bool registrationConfirmed) => RegistrationConfirmed = registrationConfirmed;
 
-        public void AddRating(int rating) => _ratings.Add(rating);
+        public void AddRating(Customer ratedBy, int rating)
+        {
+            if (_ratedBy is null)
+                _ratedBy = new();
+
+            _ratings.Add(rating);
+            _ratedBy.Add(new CustomerRatings(ratedBy, this));
+        }
 
         public void UpdateProfile(string bio, double price)
         {
