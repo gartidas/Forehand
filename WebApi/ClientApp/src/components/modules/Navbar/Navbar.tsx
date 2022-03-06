@@ -59,6 +59,7 @@ const Navbar = () => {
           <NavButtons
             buttons={isLoggedIn ? LoggedInNavButtons[auth.currentUser.role] : LoggedOutNavButtons}
             isMobileNavbar={true}
+            onClick={onClose}
           />
         </Box>
       ) : null}
