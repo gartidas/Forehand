@@ -8,6 +8,7 @@ import roleColors from '../../styles/roleColors'
 import api from '../../api/httpClient'
 import { apiErrorToast } from '../../services/toastService'
 import { IApiError } from '../../api/types'
+import { Link } from 'react-router-dom'
 
 interface UserItemProps extends ChakraProps {
   user: IUser
@@ -33,29 +34,32 @@ const UserItem = ({ user, onButtonClick, ...rest }: UserItemProps) => {
   return (
     <Flex
       my={1}
-      border='solid 1px'
-      borderColor='primary'
+      rounded={'lg'}
+      boxShadow={'lg'}
       borderRadius='lg'
       p={3}
       direction='row'
       alignItems='center'
+      backgroundColor='bg2'
       justifyContent='space-between'
       {...rest}
     >
-      <Flex alignItems='center'>
-        <Avatar
-          size={'sm'}
-          src={`https://avatars.dicebear.com/api/adventurer-neutral/${user.id}.svg`}
-          marginRight={2}
-          border={`2px solid ${roleColors[user.role]}`}
-        />
-        <Flex direction='column'>
-          <Text>
-            {user.givenName} {user.surname}
-          </Text>
-          <Text>{user.email}</Text>
+      <Link to={`/users/${user.id}`}>
+        <Flex alignItems='center'>
+          <Avatar
+            size={'sm'}
+            src={`https://avatars.dicebear.com/api/adventurer-neutral/${user.id}.svg`}
+            marginRight={2}
+            border={`2px solid ${roleColors[user.role]}`}
+          />
+          <Flex direction='column'>
+            <Text>
+              {user.givenName} {user.surname}
+            </Text>
+            <Text>{user.email}</Text>
+          </Flex>
         </Flex>
-      </Flex>
+      </Link>
       <Button variant='primary' isLoading={changingStatus} onClick={handleStatusChanged}>
         {user.registrationConfirmed ? (
           <>

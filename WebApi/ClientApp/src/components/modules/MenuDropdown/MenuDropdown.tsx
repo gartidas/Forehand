@@ -9,11 +9,13 @@ import {
   MenuDivider,
   Text
 } from '@chakra-ui/react'
+import { useNavigate } from 'react-router'
 import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
 import roleColors from '../../../styles/roleColors'
 
 const MenuDropdown = () => {
   const { currentUser, logout } = useAuthorizedUser()
+  const navigate = useNavigate()
 
   return (
     <Flex
@@ -40,7 +42,7 @@ const MenuDropdown = () => {
           </Flex>
         </MenuButton>
         <MenuList>
-          <MenuItem>Profile</MenuItem>
+          <MenuItem onClick={() => navigate(`/users/${currentUser.id}`)}>Profile</MenuItem>
           <MenuItem>Settings</MenuItem>
           <MenuDivider />
           <MenuItem onClick={() => logout()}>Logout</MenuItem>

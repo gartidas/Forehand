@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
+using WebApi.Common.Exceptions;
 using WebApi.Domain;
 using WebApi.Persistence;
 
@@ -37,13 +38,17 @@ namespace WebApi.Features.Users
                 var currentUser = await _userManager.FindByIdAsync(request.CurrentUserId);
                 var user = await _userManager.FindByIdAsync(request.UserId);
 
+                if (user is null)
+                    throw new BadRequestException(ErrorCodes.InvalidId);
+
                 var result = new UserDto
                 {
                     Id = user.Id,
                     Email = user.Email,
                     GivenName = user.GivenName,
                     Surname = user.Surname,
-                    Role = user.Role
+                    Role = user.Role,
+                    PhoneNumber = user.PhoneNumber
                 };
 
                 if (user.Role == RoleEnum.Trainer)
@@ -72,6 +77,8 @@ namespace WebApi.Features.Users
             public string Surname { get; set; }
 
             public RoleEnum Role { get; set; }
+
+            public string PhoneNumber { get; set; }
 
             public string Bio { get; set; }
 

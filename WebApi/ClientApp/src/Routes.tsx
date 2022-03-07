@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import UserDetail from './pages/Users/UserDetail'
 
 const Routes = () => {
   return (
@@ -26,6 +27,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <Users />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/users/:id'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <UserDetail />
             </DefaultLayout>
           </ProtectedRoute>
         }

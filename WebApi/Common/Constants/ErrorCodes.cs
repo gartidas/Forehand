@@ -13,5 +13,6 @@
         public const string MustNotBeEmpty = nameof(MustNotBeEmpty);
         public const string InvalidLoginCredentials = nameof(InvalidLoginCredentials);
         public const string RegistrationNotConfirmed = nameof(RegistrationNotConfirmed);
+        public const string InvalidId = nameof(InvalidId);
     }
 }
