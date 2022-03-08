@@ -38,7 +38,7 @@ const UserDetail = () => {
   }
 
   return (
-    <Center my={6} height={`calc(100vh - ${NAVBAR_HEIGHT})`}>
+    <Center minHeight={`calc(100vh - ${NAVBAR_HEIGHT})`}>
       <Box maxW={'350px'} w={'full'} bg={'bg'} rounded={'lg'} boxShadow={'lg'} overflow={'hidden'}>
         <Box h={'120px'} w={'full'} backgroundColor={roleColors[data.role]} />
         <Flex justify={'center'} mt={-12}>
