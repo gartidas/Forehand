@@ -31,7 +31,7 @@ namespace WebApi.Features.Users
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var customer = await _db.Customers.Include(x => x.RatedTrainers).SingleOrNotFoundAsync(x => x.Id == request.CurrentUserId);
+                var customer = await _db.Customers.Include(x => x.RatedTrainers).SingleOrDefaultAsync(x => x.Id == request.CurrentUserId, cancellationToken);
                 var trainer = await _db.Trainers.Include(x => x.RatedBy).SingleOrNotFoundAsync(x => x.Id == request.UserId);
 
                 if (!trainer.HasCustomerRatedTrainer(request.CurrentUserId))

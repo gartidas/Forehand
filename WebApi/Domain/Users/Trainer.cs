@@ -6,7 +6,6 @@ namespace WebApi.Domain
     public class Trainer : Entity<string>
     {
         private List<Reservation> _reservations;
-        private List<int> _ratings;
         private List<CustomerRating> _ratedBy;
 
         public Trainer(string bio, double reservationPrice, User identityUser)
@@ -16,7 +15,6 @@ namespace WebApi.Domain
             ReservationPrice = reservationPrice;
             IdentityUser = identityUser;
             Id = identityUser.Id;
-            _ratings = new();
             _reservations = new();
             _ratedBy = new();
         }
@@ -33,13 +31,11 @@ namespace WebApi.Domain
 
         public double ReservationPrice { get; private set; }
 
-        public double Rating => _ratings.Count > 0 ? _ratings.Average() : 0.0;
+        public double Rating => _ratedBy.Count > 0 ? _ratedBy.Select(x => x.Rating).Average() : 0.0;
 
         public IReadOnlyCollection<Reservation> Reservations => _reservations;
 
         public IReadOnlyCollection<CustomerRating> RatedBy => _ratedBy;
-
-        public IEnumerable<int> Ratings => _ratings;
 
         public void ChangeRegistrationStatus(bool registrationConfirmed) => RegistrationConfirmed = registrationConfirmed;
 
@@ -48,8 +44,7 @@ namespace WebApi.Domain
             if (_ratedBy is null)
                 _ratedBy = new();
 
-            _ratings.Add(rating);
-            _ratedBy.Add(new CustomerRating(ratedBy, this));
+            _ratedBy.Add(new CustomerRating(ratedBy, this, rating));
         }
 
         public bool HasCustomerRatedTrainer(string customerId) => _ratedBy.Any(x => x.RatedById == customerId);

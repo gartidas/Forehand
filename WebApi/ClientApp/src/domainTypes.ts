@@ -12,6 +12,7 @@ export interface IUserExtended extends IUser {
   bio?: string
   rating?: number
   reservationPrice?: number
+  hasCurrentUserRatedUser?: boolean
 }
 
 export interface IUser {

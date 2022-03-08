@@ -7,10 +7,15 @@ import FetchError from '../../../components/elements/FetchError'
 import { Avatar, Box, Center, Divider, Flex, Heading, Spinner, Stack, Text } from '@chakra-ui/react'
 import roleColors from '../../../styles/roleColors'
 import { NAVBAR_HEIGHT } from '../../../components/modules/Navbar/Navbar'
+import Rating from 'react-rating'
+import { StarIcon } from '@chakra-ui/icons'
+import { apiErrorToast, successToast } from '../../../services/toastService'
+import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
 
 const UserDetail = () => {
+  const { currentUser } = useAuthorizedUser()
   const { id } = useParams<{ id: string }>()
-  const { data, isLoading, error } = useQuery<IUserExtended, IApiError>(
+  const { data, isLoading, error, refetch } = useQuery<IUserExtended, IApiError>(
     ['users', id],
     async () => (await api.get(`/users/${id}`)).data
   )
@@ -18,8 +23,22 @@ const UserDetail = () => {
   if (error) return <FetchError error={error} />
   if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
 
+  const handleStatusChanged = async (rating: number) => {
+    try {
+      await api.patch(`/users/${data.id}/add-rating`, {
+        rating: rating
+      })
+    } catch (err) {
+      apiErrorToast(err as IApiError)
+      refetch()
+      return
+    }
+    successToast('Rating added.')
+    refetch()
+  }
+
   return (
-    <Center py={6} height={`calc(100vh - ${NAVBAR_HEIGHT})`}>
+    <Center my={6} height={`calc(100vh - ${NAVBAR_HEIGHT})`}>
       <Box maxW={'350px'} w={'full'} bg={'bg'} rounded={'lg'} boxShadow={'lg'} overflow={'hidden'}>
         <Box h={'120px'} w={'full'} backgroundColor={roleColors[data.role]} />
         <Flex justify={'center'} mt={-12}>
@@ -55,15 +74,19 @@ const UserDetail = () => {
                     <Text fontSize={'sm'} color={'tertiary'}>
                       Rating
                     </Text>
-                    <Text fontWeight={600}>{data.rating} / 5</Text>
+                    <Rating
+                      initialRating={data.rating}
+                      readonly={currentUser.role !== Role.BasicUser || data.hasCurrentUserRatedUser}
+                      onChange={value => handleStatusChanged(value)}
+                      emptySymbol={<StarIcon color='primary' />}
+                      fullSymbol={<StarIcon color='secondary' />}
+                    />
                   </Stack>
                   <Stack spacing={0} align={'center'}>
                     <Text fontSize={'sm'} color={'tertiary'}>
                       Price
                     </Text>
-                    <Text fontWeight={600}>
-                      {data.reservationPrice ? `${data.reservationPrice}€` : <br />}
-                    </Text>
+                    <Text fontWeight={600}>{`${data.reservationPrice}€`}</Text>
                   </Stack>
                 </Stack>
               </Stack>

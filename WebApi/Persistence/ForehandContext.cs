@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,11 +62,6 @@ namespace WebApi.Persistence
             builder.Entity<Employee>().HasOne(x => x.IdentityUser).WithMany().IsRequired();
             builder.Entity<Trainer>().HasOne(x => x.IdentityUser).WithMany().IsRequired();
             builder.Entity<Customer>().HasOne(x => x.IdentityUser).WithMany().IsRequired();
-
-            builder.Entity<Trainer>().Property(x => x.Ratings).HasConversion(
-                i => string.Join(",", i),
-                s => string.IsNullOrWhiteSpace(s) ? new List<int>() : s.Split(new[] { ',' }).Select(v => int.Parse(v)).ToList()
-                );
 
             builder.Entity<ConsumerGoods>(cg =>
             {

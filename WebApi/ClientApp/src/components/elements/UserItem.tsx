@@ -26,6 +26,7 @@ const UserItem = ({ user, onButtonClick, ...rest }: UserItemProps) => {
       })
     } catch (err) {
       apiErrorToast(err as IApiError)
+      return
     }
     onButtonClick()
     setChangingStatus(false)
