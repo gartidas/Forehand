@@ -11,6 +11,7 @@ export interface IUserExtended extends IUser {
   phoneNumber: string
   bio?: string
   rating?: number
+  numberOfRatings?: number
   reservationPrice?: number
   hasCurrentUserRatedUser?: boolean
 }

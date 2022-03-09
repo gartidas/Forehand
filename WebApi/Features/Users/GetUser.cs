@@ -56,6 +56,7 @@ namespace WebApi.Features.Users
                     var trainer = await _db.Trainers.Include(x => x.RatedBy).SingleOrNotFoundAsync(x => x.Id == request.UserId);
                     result.Bio = trainer.Bio;
                     result.Rating = trainer.Rating;
+                    result.NumberOfRatings = trainer.NumberOfRatings;
                     result.ReservationPrice = trainer.ReservationPrice;
 
                     if (currentUser.Role == RoleEnum.BasicUser)
@@ -83,6 +84,8 @@ namespace WebApi.Features.Users
             public string Bio { get; set; }
 
             public double Rating { get; set; }
+
+            public int NumberOfRatings { get; set; }
 
             public double ReservationPrice { get; set; }
 

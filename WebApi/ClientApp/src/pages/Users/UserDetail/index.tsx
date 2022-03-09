@@ -74,19 +74,26 @@ const UserDetail = () => {
                     <Text fontSize={'sm'} color={'tertiary'}>
                       Rating
                     </Text>
-                    <Rating
-                      initialRating={data.rating}
-                      readonly={currentUser.role !== Role.BasicUser || data.hasCurrentUserRatedUser}
-                      onChange={value => handleStatusChanged(value)}
-                      emptySymbol={<StarIcon color='primary' />}
-                      fullSymbol={<StarIcon color='secondary' />}
-                    />
+                    <Flex>
+                      <Rating
+                        initialRating={data.rating}
+                        readonly={
+                          currentUser.role !== Role.BasicUser || data.hasCurrentUserRatedUser
+                        }
+                        onChange={value => handleStatusChanged(value)}
+                        emptySymbol={<StarIcon color='primary' />}
+                        fullSymbol={<StarIcon color='secondary' />}
+                      />
+                      <Text fontWeight={600} marginLeft={1} paddingTop={0.5}>
+                        {`(${data.numberOfRatings})`}
+                      </Text>
+                    </Flex>
                   </Stack>
                   <Stack spacing={0} align={'center'}>
                     <Text fontSize={'sm'} color={'tertiary'}>
                       Price
                     </Text>
-                    <Text fontWeight={600}>{`${data.reservationPrice}€`}</Text>
+                    <Text fontWeight={600}>{`${data.reservationPrice}€ / h`}</Text>
                   </Stack>
                 </Stack>
               </Stack>

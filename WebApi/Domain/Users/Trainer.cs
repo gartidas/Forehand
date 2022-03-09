@@ -33,6 +33,8 @@ namespace WebApi.Domain
 
         public double Rating => _ratedBy.Count > 0 ? _ratedBy.Select(x => x.Rating).Average() : 0.0;
 
+        public int NumberOfRatings => _ratedBy.Count;
+
         public IReadOnlyCollection<Reservation> Reservations => _reservations;
 
         public IReadOnlyCollection<CustomerRating> RatedBy => _ratedBy;
