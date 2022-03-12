@@ -93,7 +93,7 @@ const UserDetail = () => {
                     <Text fontSize={'sm'} color={'tertiary'}>
                       Price
                     </Text>
-                    <Text fontWeight={600}>{`${data.reservationPrice}€ / h`}</Text>
+                    <Text fontWeight={600}>{`${data.reservationPrice} €/h`}</Text>
                   </Stack>
                 </Stack>
               </Stack>

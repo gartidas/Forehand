@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
 using WebApi.Features.Users;
-using WebApi.Persistence;
 
 namespace WebApi.Controllers
 {
@@ -13,13 +12,6 @@ namespace WebApi.Controllers
     [Route("api/users")]
     public class UsersController : BaseController
     {
-        private readonly ForehandContext _db;
-
-        public UsersController(ForehandContext db)
-        {
-            _db = db;
-        }
-
         [Authorize(nameof(RoleEnum.Admin))]
         [HttpGet("trainers-and-employees")]
         public async Task<ActionResult<IEnumerable<GetTrainersAndEmployees.UserDto>>> GetTrainersAndEmployees(string search, CancellationToken cancellationToken)

@@ -11,11 +11,15 @@ export const LoggedOutNavButtons: INabButtonProps[] = [
 ]
 
 export const CustomerNavButtons: INabButtonProps[] = [{ label: 'Home', url: '/home' }]
-export const EmployeeNavButtons: INabButtonProps[] = [{ label: 'Home', url: '/home' }]
+export const EmployeeNavButtons: INabButtonProps[] = [
+  { label: 'Home', url: '/home' },
+  { label: 'Courts', url: '/courts' }
+]
 export const TrainerNavButtons: INabButtonProps[] = [{ label: 'Home', url: '/home' }]
 export const AdminNavButtons: INabButtonProps[] = [
   { label: 'Home', url: '/home' },
-  { label: 'Users', url: '/users' }
+  { label: 'Users', url: '/users' },
+  { label: 'Courts', url: '/courts' }
 ]
 export const NoneNavButtons: INabButtonProps[] = []
 

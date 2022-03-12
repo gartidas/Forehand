@@ -44,6 +44,13 @@ export const ButtonStyles = {
         bg: whiten('secondary', 20)
       }
     },
+    warning: {
+      bg: 'warning',
+      color: 'primary',
+      _hover: {
+        bg: whiten('warning', 20)
+      }
+    },
     link: {
       color: 'primary'
     },

@@ -32,3 +32,10 @@ export enum Role {
   Trainer = 3,
   Admin = 4
 }
+
+export interface ICourt {
+  id: string
+  reservationPrice: number
+  label: string
+  description: string
+}

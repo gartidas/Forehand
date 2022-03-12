@@ -93,6 +93,7 @@ const TrainerRegistration = () => {
                 label='Reservation price'
                 isRequired
                 validate={combineValidators([requiredValidator, minNumericValue(0)])}
+                icon={<>€/h</>}
               />
               <FormInput
                 type='text'

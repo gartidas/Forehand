@@ -14,5 +14,9 @@
         public const string InvalidLoginCredentials = nameof(InvalidLoginCredentials);
         public const string RegistrationNotConfirmed = nameof(RegistrationNotConfirmed);
         public const string InvalidId = nameof(InvalidId);
+        public const string AlreadyExists = nameof(AlreadyExists);
+        public const string DoesNotExist = nameof(DoesNotExist);
+        public const string MinimalValue = nameof(MinimalValue);
+        public const string MaximalValue = nameof(MaximalValue);
     }
 }

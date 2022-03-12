@@ -1,7 +1,7 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { Input, InputProps, InputRightElement, InputGroup } from '@chakra-ui/input'
 import { FormControl, FormLabel, FormHelperText, Button } from '@chakra-ui/react'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Validator } from '../../domainTypes'
 
@@ -10,6 +10,7 @@ interface IFormInputProps extends Omit<InputProps, 'value' | 'onChange'> {
   label?: string
   type?: string
   placeholder?: string
+  icon?: ReactNode
   validate?: Validator<any>
 }
 
@@ -19,6 +20,7 @@ const FormInput = ({
   label,
   isRequired,
   type,
+  icon,
   validate: initialValidate,
   ...rest
 }: IFormInputProps) => {
@@ -73,16 +75,19 @@ const FormInput = ({
               </InputRightElement>
             </InputGroup>
           ) : (
-            <Input
-              {...innerRest}
-              {...rest}
-              value={value ?? ''}
-              isInvalid={!!errorMessage}
-              type={type}
-              onBlur={() => handleBlur(value, onChange, onBlur)}
-              onChange={getParsingOnChangeFunction(onChange)}
-              isDisabled={isDisabled || form.formState.isSubmitting}
-            />
+            <InputGroup>
+              <Input
+                {...innerRest}
+                {...rest}
+                value={value ?? ''}
+                isInvalid={!!errorMessage}
+                type={type}
+                onBlur={() => handleBlur(value, onChange, onBlur)}
+                onChange={getParsingOnChangeFunction(onChange)}
+                isDisabled={isDisabled || form.formState.isSubmitting}
+              />
+              {icon && <InputRightElement h={'full'}>{icon}</InputRightElement>}
+            </InputGroup>
           )}
           {errorMessage && (
             <FormHelperText mt={0} color='red'>

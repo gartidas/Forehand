@@ -7,6 +7,7 @@ import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import UserDetail from './pages/Users/UserDetail'
+import Courts from './pages/Courts'
 
 const Routes = () => {
   return (
@@ -37,6 +38,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <UserDetail />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/courts'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <Courts />
             </DefaultLayout>
           </ProtectedRoute>
         }

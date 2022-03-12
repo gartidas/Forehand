@@ -30,6 +30,7 @@ namespace WebApi.Startup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            FluentValidationCamelCasePropertyNameResolver.UseFluentValidationCamelCasePropertyResolver();
             services.AddSwagger();
             services.AddAuth(Configuration);
             services.AddHttpClient();

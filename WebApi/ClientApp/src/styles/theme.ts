@@ -6,6 +6,7 @@ const theme = extendTheme({
     primary: '#1A202C',
     secondary: '#68D391',
     tertiary: '#718096',
+    warning: '#FC8181',
     bg: '#FFFFFF',
     bg2: '#F7FAFC'
   },

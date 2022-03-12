@@ -16,11 +16,11 @@ namespace WebApi.Domain
             _reservations = new();
         }
 
-        public double ReservationPrice { get; private set; }
+        public double ReservationPrice { get; set; }
 
-        public string Label { get; private set; }
+        public string Label { get; set; }
 
-        public string Description { get; private set; }
+        public string Description { get; set; }
 
         public IReadOnlyCollection<Reservation> Reservations => _reservations;
     }
