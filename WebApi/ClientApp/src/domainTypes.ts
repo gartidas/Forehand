@@ -39,3 +39,23 @@ export interface ICourt {
   label: string
   description: string
 }
+
+export interface ISportsGear {
+  id: string
+  reservationPrice: number
+  registrationNumber: string
+  shoppingPrice: number
+  name: string
+  productionYear: string
+  physicalState: PhysicalState
+  manufacturer: string
+}
+
+export enum PhysicalState {
+  None = 0,
+  New = 1,
+  Used = 2,
+  WornOut = 3,
+  Damaged = 4,
+  Discarded = 5
+}

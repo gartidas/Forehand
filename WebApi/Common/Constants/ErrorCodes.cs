@@ -18,5 +18,6 @@
         public const string DoesNotExist = nameof(DoesNotExist);
         public const string MinimalValue = nameof(MinimalValue);
         public const string MaximalValue = nameof(MaximalValue);
+        public const string MustBeInThePast = nameof(MustBeInThePast);
     }
 }

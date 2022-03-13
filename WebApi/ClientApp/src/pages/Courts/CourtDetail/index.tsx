@@ -15,7 +15,7 @@ import {
 } from '../../../services/toastService'
 import { combineValidators, minNumericValue, requiredValidator } from '../../../utils/validators'
 
-interface AddCourtModalProps {
+interface CourtDetailProps {
   onClose: () => void
   refetch: () => void
   isOpen: boolean
@@ -34,7 +34,7 @@ const defaultValues: IFormValue = {
   description: ''
 }
 
-const CourtDetail = ({ onClose, refetch, isOpen, court }: AddCourtModalProps) => {
+const CourtDetail = ({ onClose, refetch, isOpen, court }: CourtDetailProps) => {
   const [isDisabled, setIsDisabled] = useState(true)
 
   const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({

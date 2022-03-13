@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import UserDetail from './pages/Users/UserDetail'
 import Courts from './pages/Courts'
+import SportsGear from './pages/SportsGear'
 
 const Routes = () => {
   return (
@@ -48,6 +49,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <Courts />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/sports-gear'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <SportsGear />
             </DefaultLayout>
           </ProtectedRoute>
         }

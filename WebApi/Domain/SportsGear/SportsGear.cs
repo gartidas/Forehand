@@ -23,21 +23,21 @@ namespace WebApi.Domain
             _reservations = new();
         }
 
-        public double ReservationPrice { get; private set; }
+        public double ReservationPrice { get; set; }
 
-        public DateTime RegistrationDate { get; private set; }
+        public DateTime RegistrationDate { get; set; }
 
-        public string RegistrationNumber { get; private set; }
+        public string RegistrationNumber { get; set; }
 
-        public double ShoppingPrice { get; private set; }
+        public double ShoppingPrice { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public DateTime ProductionYear { get; private set; }
+        public DateTime ProductionYear { get; set; }
 
-        public PhysicalState PhysicalState { get; private set; }
+        public PhysicalState PhysicalState { get; set; }
 
-        public string Manufacturer { get; private set; }
+        public string Manufacturer { get; set; }
 
         public IReadOnlyCollection<ReservationSportsGear> Reservations => _reservations;
     }
