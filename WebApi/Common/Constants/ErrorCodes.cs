@@ -19,5 +19,6 @@
         public const string MinimalValue = nameof(MinimalValue);
         public const string MaximalValue = nameof(MaximalValue);
         public const string MustBeInThePast = nameof(MustBeInThePast);
+        public const string MustBeAfterStartDate = nameof(MustBeAfterStartDate);
     }
 }

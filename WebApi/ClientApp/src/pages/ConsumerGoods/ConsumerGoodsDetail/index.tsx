@@ -12,46 +12,54 @@ import {
   successToast
 } from '../../../services/toastService'
 import { combineValidators, minNumericValue, requiredValidator } from '../../../utils/validators'
-import { IGiftCard } from '../../../domainTypes'
+import { IConsumerGoods } from '../../../domainTypes'
+import { formatDateForInput } from '../../../utils'
 
-interface GiftCardDetailProps {
+interface ConsumerGoodsDetailProps {
   onClose: () => void
   refetch: () => void
   isOpen: boolean
-  giftCard?: IGiftCard
+  consumerGoods?: IConsumerGoods
 }
 
 interface IFormValue {
-  value: number
   price: number
+  expirationDate: string
+  productionDate: string
   name: string
-  code: string
+  manufacturer: string
 }
 
 const defaultValues: Partial<IFormValue> = {
-  value: 0,
   price: 0,
+  expirationDate: '',
+  productionDate: '',
   name: '',
-  code: ''
+  manufacturer: ''
 }
 
-const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailProps) => {
+const ConsumerGoodsDetail = ({
+  onClose,
+  refetch,
+  isOpen,
+  consumerGoods
+}: ConsumerGoodsDetailProps) => {
   const [isDisabled, setIsDisabled] = useState(true)
   const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
-    url: giftCard ? `/gift-cards/${giftCard.id}` : '/gift-cards',
-    method: giftCard ? 'patch' : 'post',
+    url: consumerGoods ? `/consumer-goods/${consumerGoods.id}` : '/consumer-goods',
+    method: consumerGoods ? 'patch' : 'post',
     successCallback: () => {
-      successToast(giftCard ? 'Gift card edited.' : 'Gift card added.')
+      successToast(consumerGoods ? 'Consumer goods edited.' : 'Consumer goods added.')
       refetch()
       onClose()
     },
     errorCallback: errorToastIfNotValidationError
   })
 
-  const deleteGiftCard = async () => {
+  const deleteConsumerGoods = async () => {
     try {
-      await api.delete(`/gift-cards/${giftCard!.id}`)
-      successToast('Gift card deleted.')
+      await api.delete(`/consumer-goods/${consumerGoods!.id}`)
+      successToast('Consumer goods deleted.')
       refetch()
       onClose()
     } catch (err) {
@@ -65,18 +73,19 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
       onClose={onClose}
       onSubmit={onSubmit}
       defaultValues={
-        giftCard
+        consumerGoods
           ? {
-              value: giftCard.value,
-              price: giftCard.price,
-              name: giftCard.name,
-              code: giftCard.code
+              price: consumerGoods.price,
+              expirationDate: formatDateForInput(consumerGoods.expirationDate),
+              productionDate: formatDateForInput(consumerGoods.productionDate),
+              name: consumerGoods.name,
+              manufacturer: consumerGoods.manufacturer
             }
           : defaultValues
       }
-      title={giftCard ? giftCard.name : 'Add gift card'}
+      title={consumerGoods ? consumerGoods.name : 'Add consumer goods'}
       footerButtons={
-        giftCard
+        consumerGoods
           ? isDisabled
             ? [
                 {
@@ -90,7 +99,7 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
                   name: '',
                   icon: <DeleteIcon />,
                   variant: 'warning',
-                  onClick: deleteGiftCard,
+                  onClick: deleteConsumerGoods,
                   shake: true
                 }
               ]
@@ -139,21 +148,9 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
                   label='Name'
                   isRequired
                   validate={requiredValidator}
-                  isDisabled={isDisabled && giftCard !== undefined}
+                  isDisabled={isDisabled && consumerGoods !== undefined}
                 />
               </Box>
-              <Box>
-                <FormInput
-                  type='text'
-                  name='code'
-                  label='Code'
-                  isRequired
-                  validate={requiredValidator}
-                  isDisabled={isDisabled && giftCard !== undefined}
-                />
-              </Box>
-            </HStack>
-            <HStack>
               <Box>
                 <FormInput
                   type='number'
@@ -162,21 +159,42 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
                   isRequired
                   validate={combineValidators([requiredValidator, minNumericValue(0)])}
                   icon={<>€</>}
-                  isDisabled={isDisabled && giftCard !== undefined}
+                  isDisabled={isDisabled && consumerGoods !== undefined}
+                />
+              </Box>
+            </HStack>
+            <HStack>
+              <Box>
+                <FormInput
+                  type='date'
+                  name='productionDate'
+                  label='Production date'
+                  isRequired
+                  validate={requiredValidator}
+                  isDisabled={isDisabled && consumerGoods !== undefined}
                 />
               </Box>
               <Box>
                 <FormInput
-                  type='number'
-                  name='value'
-                  label='Value'
+                  type='date'
+                  name='expirationDate'
+                  label='Expiration date'
                   isRequired
-                  validate={combineValidators([requiredValidator, minNumericValue(0)])}
-                  icon={<>€</>}
-                  isDisabled={isDisabled && giftCard !== undefined}
+                  validate={requiredValidator}
+                  isDisabled={isDisabled && consumerGoods !== undefined}
                 />
               </Box>
             </HStack>
+            <Box>
+              <FormInput
+                type='text'
+                name='manufacturer'
+                label='Manufacturer'
+                isRequired
+                validate={requiredValidator}
+                isDisabled={isDisabled && consumerGoods !== undefined}
+              />
+            </Box>
           </Stack>
         </Stack>
       </Flex>
@@ -184,4 +202,4 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
   )
 }
 
-export default GiftCardDetail
+export default ConsumerGoodsDetail

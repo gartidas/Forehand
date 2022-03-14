@@ -51,14 +51,14 @@ const GiftCardsItem = ({ giftCard, onClick, ...rest }: GiftCardsItemProps) => {
           <Text fontSize={'sm'} color={'tertiary'}>
             Price
           </Text>
-          <Text fontWeight={600} fontSize={'sm'}>{`${giftCard.price} €/h`}</Text>
+          <Text fontWeight={600} fontSize={'sm'}>{`${giftCard.price} €`}</Text>
         </Stack>
         <Stack spacing={0} align={'center'}>
           <Stack spacing={0} align={'center'}>
             <Text fontSize={'sm'} color={'tertiary'}>
               Value
             </Text>
-            <Text fontWeight={600} fontSize={'sm'}>{`${giftCard.value} €/h`}</Text>
+            <Text fontWeight={600} fontSize={'sm'}>{`${giftCard.value} €`}</Text>
           </Stack>
         </Stack>
       </Stack>

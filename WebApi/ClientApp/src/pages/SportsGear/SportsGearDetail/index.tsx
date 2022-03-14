@@ -182,7 +182,7 @@ const SportsGearDetail = ({ onClose, refetch, isOpen, sportsGear }: SportsGearDe
                   label='Shopping price'
                   isRequired
                   validate={combineValidators([requiredValidator, minNumericValue(0)])}
-                  icon={<>€/h</>}
+                  icon={<>€</>}
                   isDisabled={isDisabled && sportsGear !== undefined}
                 />
               </Box>

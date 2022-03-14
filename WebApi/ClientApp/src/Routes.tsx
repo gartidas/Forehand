@@ -10,6 +10,7 @@ import UserDetail from './pages/Users/UserDetail'
 import Courts from './pages/Courts'
 import SportsGear from './pages/SportsGear'
 import GiftCards from './pages/GiftCards'
+import ConsumerGoods from './pages/ConsumerGoods'
 
 const Routes = () => {
   return (
@@ -70,6 +71,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <GiftCards />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/consumer-goods'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <ConsumerGoods />
             </DefaultLayout>
           </ProtectedRoute>
         }

@@ -15,15 +15,15 @@ namespace WebApi.Domain
             Manufacturer = manufacturer;
         }
 
-        public double Price { get; private set; }
+        public double Price { get; set; }
 
-        public DateTime ExpirationDate { get; private set; }
+        public DateTime ExpirationDate { get; set; }
 
-        public DateTime ProductionDate { get; private set; }
+        public DateTime ProductionDate { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public string Manufacturer { get; private set; }
+        public string Manufacturer { get; set; }
 
         public Employee Employee { get; private set; }
 

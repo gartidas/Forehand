@@ -67,3 +67,12 @@ export interface IGiftCard {
   code: string
   name: string
 }
+
+export interface IConsumerGoods {
+  id: string
+  price: number
+  expirationDate: string
+  productionDate: string
+  name: string
+  manufacturer: string
+}
