@@ -59,3 +59,11 @@ export enum PhysicalState {
   Damaged = 4,
   Discarded = 5
 }
+
+export interface IGiftCard {
+  id: string
+  price: number
+  value: number
+  code: string
+  name: string
+}

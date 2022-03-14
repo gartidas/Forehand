@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
+using WebApi.Common.Exceptions;
 using WebApi.Domain;
 using WebApi.Persistence;
 using static WebApi.Features.SportsGear.GetSportsGear;
@@ -45,6 +47,9 @@ namespace WebApi.Features.SportsGear
             public async Task<SportsGearDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var sportsGear = await _db.SportsGear.SingleOrNotFoundAsync(x => x.Id == request.SportsGearId);
+
+                if (sportsGear.RegistrationNumber != request.RegistrationNumber && await _db.SportsGear.AnyAsync(x => x.RegistrationNumber == request.RegistrationNumber, cancellationToken))
+                    throw new BadRequestException(ErrorCodes.AlreadyExists);
 
                 sportsGear.ReservationPrice = request.ReservationPrice;
                 sportsGear.RegistrationNumber = request.RegistrationNumber;

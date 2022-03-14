@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import UserDetail from './pages/Users/UserDetail'
 import Courts from './pages/Courts'
 import SportsGear from './pages/SportsGear'
+import GiftCards from './pages/GiftCards'
 
 const Routes = () => {
   return (
@@ -59,6 +60,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <SportsGear />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/gift-cards'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <GiftCards />
             </DefaultLayout>
           </ProtectedRoute>
         }

@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
+using WebApi.Common.Exceptions;
 using WebApi.Persistence;
 using static WebApi.Features.Courts.GetCourts;
 
@@ -35,6 +37,9 @@ namespace WebApi.Features.Courts
             public async Task<CourtDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var court = await _db.Courts.SingleOrNotFoundAsync(x => x.Id == request.CourtId);
+
+                if (court.Label != request.Label && await _db.Courts.AnyAsync(x => x.Label == request.Label, cancellationToken))
+                    throw new BadRequestException(ErrorCodes.AlreadyExists);
 
                 court.ReservationPrice = request.ReservationPrice;
                 court.Label = request.Label;
