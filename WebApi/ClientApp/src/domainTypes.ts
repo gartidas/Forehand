@@ -76,3 +76,24 @@ export interface IConsumerGoods {
   name: string
   manufacturer: string
 }
+
+export interface IReservation {
+  id: string
+  price: number
+  startDate: string
+  endDate: string
+  reservationState: ReservationState
+  court: ICourt
+  trainer: IUserExtended
+  customer: IUser
+  sportsGear: ISportsGear[]
+}
+
+export enum ReservationState {
+  Unknown = 0,
+  Planned = 1,
+  Confirmed = 2,
+  Declined = 3,
+  Fulfilled = 4,
+  NotFulfilled = 5
+}

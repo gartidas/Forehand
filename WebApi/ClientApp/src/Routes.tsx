@@ -11,6 +11,7 @@ import Courts from './pages/Courts'
 import SportsGear from './pages/SportsGear'
 import GiftCards from './pages/GiftCards'
 import ConsumerGoods from './pages/ConsumerGoods'
+import Reservations from './pages/Reservations'
 
 const Routes = () => {
   return (
@@ -81,6 +82,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <ConsumerGoods />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/reservations'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <Reservations />
             </DefaultLayout>
           </ProtectedRoute>
         }

@@ -15,8 +15,8 @@ interface IFormValue {
 }
 
 const defaultValues: IFormValue = {
-  email: 'admin@forehand.com',
-  password: 'admin123'
+  email: 'garamone@gmail.com',
+  password: 'fene123'
 }
 
 const LoginForm = () => {

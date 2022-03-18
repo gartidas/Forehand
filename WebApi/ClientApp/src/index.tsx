@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import AuthProvider from './contextProviders/AuthProvider'
+import ReservationsProvider from './contextProviders/ReservationsProvider'
 import * as serviceWorker from './serviceWorker'
 import theme from './styles/theme'
 
@@ -17,9 +18,11 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <ChakraProvider theme={theme}>
-            <App />
-          </ChakraProvider>
+          <ReservationsProvider>
+            <ChakraProvider theme={theme}>
+              <App />
+            </ChakraProvider>
+          </ReservationsProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
