@@ -13,6 +13,7 @@ using System.Reflection;
 using WebApi.Common.Behaviours;
 using WebApi.Common.Behaviours.Authorization;
 using WebApi.Common.Exceptions;
+using WebApi.Features.Reservations;
 using WebApi.Persistence;
 using WebApi.Startup.ExceptionHandling;
 
@@ -34,6 +35,7 @@ namespace WebApi.Startup
             services.AddSwagger();
             services.AddAuth(Configuration);
             services.AddHttpClient();
+            services.AddSignalR();
             services.AddControllersWithViews();
             services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/build");
 
@@ -73,6 +75,7 @@ namespace WebApi.Startup
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ReservationsHub>("/api/reservations-hub");
             });
 
             app.UseSpa(spa =>

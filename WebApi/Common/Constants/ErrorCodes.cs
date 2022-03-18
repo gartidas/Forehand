@@ -19,6 +19,8 @@
         public const string MinimalValue = nameof(MinimalValue);
         public const string MaximalValue = nameof(MaximalValue);
         public const string MustBeInThePast = nameof(MustBeInThePast);
+        public const string MustBeInTheFuture = nameof(MustBeInTheFuture);
         public const string MustBeAfterStartDate = nameof(MustBeAfterStartDate);
+        public const string ReservationForThisDateNotValid = nameof(ReservationForThisDateNotValid);
     }
 }

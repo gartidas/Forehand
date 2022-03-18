@@ -65,12 +65,44 @@ namespace WebApi.Domain
             ReservationState = ReservationState.Fulfilled;
         }
 
-        public void AddSportsGear(SportsGear sportsGear)
+        public void AddSportsGear(List<SportsGear> sportsGear)
         {
             if (_sportsGear is null)
                 _sportsGear = new();
 
-            _sportsGear.Add(new ReservationSportsGear(this, sportsGear));
+            foreach (var item in sportsGear)
+            {
+                _sportsGear.Add(new ReservationSportsGear(this, item));
+            }
+        }
+
+        private void EditSportsGear(List<SportsGear> sportsGear)
+        {
+            if (_sportsGear is null)
+                _sportsGear = new();
+
+            if (_sportsGear.Count > 0)
+                _sportsGear.Clear();
+
+            foreach (var item in sportsGear)
+            {
+                _sportsGear.Add(new ReservationSportsGear(this, item));
+            }
+        }
+
+        public void EditReservation(double price, DateTime startDate, DateTime endDate, Court court,
+            Customer customer, Trainer trainer, List<SportsGear> sportsGear)
+        {
+            Price = price;
+            StartDate = startDate;
+            EndDate = endDate;
+            Court = court;
+            CourtId = court.Id;
+            Customer = customer;
+            CustomerId = customer.Id;
+            Trainer = trainer;
+            TrainerId = trainer.Id;
+            EditSportsGear(sportsGear);
         }
     }
 
