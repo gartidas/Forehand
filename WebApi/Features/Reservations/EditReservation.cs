@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -41,7 +40,7 @@ namespace WebApi.Features.Reservations
         {
             private readonly ForehandContext _db;
 
-            public Handler(ForehandContext db, IHubContext<ReservationsHub, IReservationsClient> reservationsHub)
+            public Handler(ForehandContext db)
             {
                 _db = db;
             }
