@@ -40,12 +40,10 @@ namespace WebApi.Features.Reservations
         public class Handler : IRequestHandler<Command, Unit>
         {
             private readonly ForehandContext _db;
-            private readonly IHubContext<ReservationsHub, IReservationsClient> _reservationsHub;
 
             public Handler(ForehandContext db, IHubContext<ReservationsHub, IReservationsClient> reservationsHub)
             {
                 _db = db;
-                _reservationsHub = reservationsHub;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
