@@ -9,6 +9,10 @@ export const getApiErrorMessage = (err: IApiError) => {
 
 export const formatDateForInput = (date: string) => moment(date).format('YYYY-MM-DD')
 
+export const formatDateForCalendar = (date: string) => moment(date).format('YYYY-MM-DD HH:mm')
+
+export const formatDateForForm = (date: string) => moment(date).format('dddd DD.MM.')
+
 export const toLocalTime = (date: string | Date, format?: string) => {
   const utc = moment.utc(date).toDate()
   return moment(utc)

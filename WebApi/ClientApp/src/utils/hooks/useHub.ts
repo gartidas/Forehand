@@ -7,7 +7,7 @@ import { useAuth } from '../../contextProviders/AuthProvider'
 export type DisconnectType = 'connecting' | 'temporary' | 'permanent'
 
 const getJwt = () => {
-  const authHeader: string | undefined = api.defaults.headers['Authorization']
+  const authHeader: string | undefined = api.defaults.headers.common['Authorization']
   return authHeader ? authHeader.replace('Bearer ', '') : ''
 }
 

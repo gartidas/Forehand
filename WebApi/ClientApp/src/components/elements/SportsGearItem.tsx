@@ -1,13 +1,24 @@
 import { Text, Stack } from '@chakra-ui/layout'
-import { ChakraProps } from '@chakra-ui/react'
+import { Button, ChakraProps } from '@chakra-ui/react'
+import { ReactNode } from 'react'
 import { ISportsGear, PhysicalState } from '../../domainTypes'
 
 interface SportsGearItemProps extends ChakraProps {
   sportsGear: ISportsGear
-  onClick: () => void
+  onClick?: () => void
+  button?: {
+    name: string
+    variant: string
+    text?: string
+    onClick: () => void
+    icon?: ReactNode
+    type?: 'submit' | 'reset' | 'button' | undefined
+    isLoading?: boolean
+    shake?: boolean
+  }
 }
 
-const SportsGearItem = ({ sportsGear, onClick, ...rest }: SportsGearItemProps) => {
+const SportsGearItem = ({ sportsGear, onClick, button, ...rest }: SportsGearItemProps) => {
   return (
     <Stack
       my={1}
@@ -20,14 +31,16 @@ const SportsGearItem = ({ sportsGear, onClick, ...rest }: SportsGearItemProps) =
       backgroundColor='bg2'
       justifyContent='space-around'
       width='full'
+      spacing={0}
       {...rest}
     >
       <Stack
         direction={{ base: 'column', md: 'row' }}
-        width='50%'
         justifyContent='space-around'
-        cursor='pointer'
+        cursor={onClick ? 'pointer' : 'default'}
         onClick={onClick}
+        flex={1}
+        spacing={0}
       >
         <Stack spacing={0} align={'center'}>
           <Text fontSize={'sm'} color={'tertiary'}>
@@ -46,7 +59,12 @@ const SportsGearItem = ({ sportsGear, onClick, ...rest }: SportsGearItemProps) =
           </Text>
         </Stack>
       </Stack>
-      <Stack direction={{ base: 'column', md: 'row' }} width='50%' justifyContent='space-around'>
+      <Stack
+        spacing={0}
+        direction={{ base: 'column', md: 'row' }}
+        justifyContent='space-around'
+        flex={1}
+      >
         <Stack spacing={0} align={'center'}>
           <Text fontSize={'sm'} color={'tertiary'}>
             Price
@@ -62,6 +80,19 @@ const SportsGearItem = ({ sportsGear, onClick, ...rest }: SportsGearItemProps) =
           </Text>
         </Stack>
       </Stack>
+      {button && (
+        <Button
+          key={button.name}
+          name={button.name}
+          variant={button.variant}
+          onClick={button.onClick}
+          type={button.type}
+          isLoading={button.isLoading}
+        >
+          {button.text}
+          {button.icon}
+        </Button>
+      )}
     </Stack>
   )
 }

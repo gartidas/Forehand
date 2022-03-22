@@ -12,6 +12,7 @@ import SportsGear from './pages/SportsGear'
 import GiftCards from './pages/GiftCards'
 import ConsumerGoods from './pages/ConsumerGoods'
 import Reservations from './pages/Reservations'
+import CreateReservation from './pages/Reservations/CreateReservation'
 
 const Routes = () => {
   return (
@@ -92,6 +93,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <Reservations />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/reservations/new/:fromDate/:toDate'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <CreateReservation />
             </DefaultLayout>
           </ProtectedRoute>
         }
