@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Persistence;
@@ -27,19 +26,8 @@ namespace WebApi.Features.Reservations
 
             public async Task<ReservationDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var reservation = await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
-                return new ReservationDto
-                {
-                    Id = reservation.Id,
-                    Price = reservation.Price,
-                    StartDate = reservation.StartDate,
-                    EndDate = reservation.EndDate,
-                    ReservationState = reservation.ReservationState,
-                    Court = reservation.Court,
-                    Trainer = reservation.Trainer,
-                    Customer = reservation.Customer,
-                    SportsGear = reservation.SportsGear.Select(x => x.SportsGear).ToList()
-                };
+                var reservation = await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).ThenInclude(x => x.IdentityUser).Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).ThenInclude(x => x.IdentityUser).SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
+                return ReservationDto.Map(reservation);
             }
         }
     }

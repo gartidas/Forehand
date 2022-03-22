@@ -17,9 +17,9 @@ namespace WebApi.Controllers
     public class ReservationsController : BaseController
     {
         [Authorize(nameof(RoleEnum.BasicUser))]
-        [HttpPost("calendar")]
-        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservations(GetReservations.Query query, CancellationToken cancellationToken)
-          => await Mediator.Send(query, cancellationToken);
+        [HttpGet("calendar")]
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservations(CancellationToken cancellationToken)
+          => await Mediator.Send(new GetReservations.Query(), cancellationToken);
 
         [Authorize(nameof(RoleEnum.BasicUser))]
         [HttpGet("{id}")]
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
         => await Mediator.Send(query, cancellationToken);
 
         [Authorize(nameof(RoleEnum.BasicUser))]
-        [HttpPost("items/sportsGGear")]
+        [HttpPost("items/sportsGear")]
         public async Task<ActionResult<IEnumerable<SportsGearDto>>> GetSportsGearWithoutReservation(GetSportsGearWithoutReservation.Query query, CancellationToken cancellationToken)
         => await Mediator.Send(query, cancellationToken);
     }

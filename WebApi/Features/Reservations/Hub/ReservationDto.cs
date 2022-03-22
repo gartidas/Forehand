@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebApi.Domain;
+using static WebApi.Features.Courts.GetCourts;
+using static WebApi.Features.SportsGear.GetSportsGear;
+using static WebApi.Features.Users.GetUser;
 
 namespace WebApi.Features.Reservations
 {
@@ -17,29 +20,61 @@ namespace WebApi.Features.Reservations
 
         public ReservationState ReservationState { get; set; }
 
-        public Court Court { get; set; }
+        public CourtDto Court { get; set; }
 
-        public Trainer Trainer { get; set; }
+        public UserDto Trainer { get; set; }
 
-        public Customer Customer { get; set; }
+        public UserDto Customer { get; set; }
 
-        public Order Order { get; set; }
+        //public OrderDto Order { get; set; }
 
-        public List<Domain.SportsGear> SportsGear { get; set; }
+        public List<SportsGearDto> SportsGear { get; set; }
 
         public static ReservationDto Map(Reservation reservation)
             => new ReservationDto()
             {
                 Id = reservation.Id,
-                Court = reservation.Court,
-                Customer = reservation.Customer,
+                Court = new CourtDto()
+                {
+                    Id = reservation.Court.Id,
+                    Label = reservation.Court.Label,
+                    Description = reservation.Court.Description,
+                    ReservationPrice = reservation.Court.ReservationPrice,
+                },
+                Customer = new UserDto()
+                {
+                    Id = reservation.Customer.IdentityUser.Id,
+                    Email = reservation.Customer.IdentityUser.Email,
+                    GivenName = reservation.Customer.IdentityUser.GivenName,
+                    Surname = reservation.Customer.IdentityUser.Surname,
+                    Role = reservation.Customer.IdentityUser.Role,
+                },
                 EndDate = reservation.EndDate,
-                Order = reservation.Order,
+                //Order = reservation.Order,
                 Price = reservation.Price,
                 ReservationState = reservation.ReservationState,
-                SportsGear = reservation.SportsGear.Select(x => x.SportsGear).ToList(),
+                SportsGear = reservation.SportsGear.Select(x => new SportsGearDto()
+                {
+                    Id = x.SportsGear.Id,
+                    ReservationPrice = x.SportsGear.ReservationPrice,
+                    RegistrationDate = x.SportsGear.RegistrationDate,
+                    RegistrationNumber = x.SportsGear.RegistrationNumber,
+                    ShoppingPrice = x.SportsGear.ShoppingPrice,
+                    Name = x.SportsGear.Name,
+                    ProductionYear = x.SportsGear.ProductionYear,
+                    PhysicalState = x.SportsGear.PhysicalState,
+                    Manufacturer = x.SportsGear.Manufacturer,
+                }).ToList(),
                 StartDate = reservation.StartDate,
-                Trainer = reservation.Trainer
+                Trainer = reservation.Trainer is not null ? new UserDto()
+                {
+                    Id = reservation.Trainer.IdentityUser.Id,
+                    Email = reservation.Trainer.IdentityUser.Email,
+                    GivenName = reservation.Trainer.IdentityUser.GivenName,
+                    Surname = reservation.Trainer.IdentityUser.Surname,
+                    Role = reservation.Trainer.IdentityUser.Role,
+                    ReservationPrice = reservation.Trainer.ReservationPrice
+                } : null
             };
     }
 }

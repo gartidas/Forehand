@@ -29,7 +29,7 @@ namespace WebApi.Features.Reservations.ReservationItems
 
             public async Task<List<UserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _db.Trainers.Include(x => x.Reservations)
+                return await _db.Trainers.Include(x => x.Reservations).Include(x => x.IdentityUser)
                     .Where(x => x.Reservations.All(x => x.EndDate < request.FromDate || x.StartDate > request.ToDate))
                     .Select(x => new UserDto
                     {
@@ -38,7 +38,8 @@ namespace WebApi.Features.Reservations.ReservationItems
                         GivenName = x.IdentityUser.GivenName,
                         Surname = x.IdentityUser.Surname,
                         Role = x.IdentityUser.Role,
-                        ReservationPrice = x.ReservationPrice
+                        ReservationPrice = x.ReservationPrice,
+                        Bio = x.Bio
                     })
                   .OrderBy(x => x.Email)
                   .ThenBy(x => x.GivenName)

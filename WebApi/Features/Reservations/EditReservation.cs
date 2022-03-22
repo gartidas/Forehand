@@ -52,19 +52,19 @@ namespace WebApi.Features.Reservations
             {
                 var reservation = await _db.Reservations.SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
 
-                var customer = await _db.Customers.SingleOrNotFoundAsync(x => x.Id == request.CustomerId);
+                var customer = await _db.Customers.Include(x => x.IdentityUser).Include(x => x.Reservations).SingleOrNotFoundAsync(x => x.Id == request.CustomerId);
 
-                var court = await _db.Courts.SingleOrNotFoundAsync(x => x.Id == request.CourtId);
+                var court = await _db.Courts.Include(x => x.Reservations).SingleOrNotFoundAsync(x => x.Id == request.CourtId);
 
                 if (court.Reservations.Any(x => x.EndDate > request.StartDate && x.StartDate < request.EndDate))
                     throw new BadRequestException(ErrorCodes.ReservationForThisDateNotValid);
 
-                var trainer = await _db.Trainers.SingleOrNotFoundAsync(x => x.Id == request.TrainerId);
+                var trainer = await _db.Trainers.Include(x => x.IdentityUser).Include(x => x.Reservations).SingleOrDefaultAsync(x => x.Id == request.TrainerId, cancellationToken);
 
                 if (trainer.Reservations.Any(x => x.EndDate > request.StartDate && x.StartDate < request.EndDate))
                     throw new BadRequestException(ErrorCodes.ReservationForThisDateNotValid);
 
-                var sportsGear = await _db.SportsGear.Where(x => request.SportsGearIds.Any(y => y == x.Id)).ToListAsync(cancellationToken);
+                var sportsGear = await _db.SportsGear.Include(x => x.Reservations).ThenInclude(x => x.Reservation).Where(x => request.SportsGearIds.Any(y => y == x.Id)).ToListAsync(cancellationToken);
 
                 foreach (var item in sportsGear)
                 {
@@ -73,8 +73,6 @@ namespace WebApi.Features.Reservations
                 }
 
                 reservation.EditReservation(request.Price, request.StartDate, request.EndDate, court, customer, trainer, sportsGear);
-
-                await _reservationsHub.Clients.All.ReceiveReservation(ReservationDto.Map(reservation));
 
                 await _db.SaveChangesAsync(cancellationToken);
 
