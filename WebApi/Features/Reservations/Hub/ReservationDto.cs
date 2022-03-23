@@ -73,7 +73,8 @@ namespace WebApi.Features.Reservations
                     GivenName = reservation.Trainer.IdentityUser.GivenName,
                     Surname = reservation.Trainer.IdentityUser.Surname,
                     Role = reservation.Trainer.IdentityUser.Role,
-                    ReservationPrice = reservation.Trainer.ReservationPrice
+                    ReservationPrice = reservation.Trainer.ReservationPrice,
+                    Bio = reservation.Trainer.Bio
                 } : null
             };
     }

@@ -11,7 +11,7 @@ import {
 import { ReactNode } from 'react'
 import { UseFormMethods } from 'react-hook-form'
 import Form from '../HookForm/Form'
-import styled, { keyframes } from 'styled-components'
+import { WobblyDiv } from '../WobblyDiv/WobblyDiv'
 
 interface FormModalProps {
   onClose: () => void
@@ -31,29 +31,6 @@ interface FormModalProps {
     shake?: boolean
   }[]
 }
-
-const wobbleAnimation = keyframes`
-  25% {
-    transform: rotate(15deg);
-  }
-  50% {
-    transform: rotate(-18deg);
-  }
-  75% {
-    transform: rotate(5deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-`
-
-const WobblyDiv = styled.div`
-  animation: 2s ${wobbleAnimation} infinite;
-
-  &:hover {
-    animation: none;
-  }
-`
 
 const FormModal = ({
   onClose,

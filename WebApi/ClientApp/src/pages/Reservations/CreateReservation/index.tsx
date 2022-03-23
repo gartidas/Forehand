@@ -22,7 +22,7 @@ import { formatDateForForm, toLocalTime } from '../../../utils'
 import { requiredValidator } from '../../../utils/validators'
 import api from '../../../api/httpClient'
 import { useSubmitForm } from '../../../components/modules/HookForm/hooks/useSubmitForm'
-import { errorToastIfNotValidationError, successToast } from '../../../services/toastService'
+import { apiErrorToast, successToast } from '../../../services/toastService'
 import Form from '../../../components/modules/HookForm/Form'
 import { useMemo, useState } from 'react'
 import RequiredIndicator from '../../../components/elements/RequiredIndicator'
@@ -98,7 +98,7 @@ const CreateReservation = () => {
       successToast('Reservation created successfully.')
       navigate('/reservations')
     },
-    errorCallback: errorToastIfNotValidationError
+    errorCallback: error => apiErrorToast({ data: error, status: 400 })
   })
 
   const courtsQuery = useQuery<ICourt[], IApiError>(
@@ -156,14 +156,8 @@ const CreateReservation = () => {
       mt={2}
     >
       <Stack spacing={2} alignItems='center'>
-        <Flex
-          alignSelf='center'
-          alignItems='center'
-          width='full'
-          backgroundColor='bg2'
-          paddingBottom={2}
-        >
-          <Stack alignSelf='center' alignItems='center' width='full'>
+        <Flex alignItems='center' width='full' backgroundColor='bg2'>
+          <Stack alignItems='center' py={2} width='full'>
             <Heading
               fontSize={{ base: 'sm', md: 'lg' }}
               fontWeight={500}
@@ -181,12 +175,7 @@ const CreateReservation = () => {
               {fromTime}-{toTime}
             </Heading>
           </Stack>
-          <Button
-            variant='primary'
-            onClick={() => navigate('/reservations')}
-            alignSelf='flex-end'
-            marginRight={5}
-          >
+          <Button variant='primary' onClick={() => navigate('/reservations')} marginRight={5}>
             <ChevronLeftIcon />
           </Button>
         </Flex>
@@ -253,6 +242,7 @@ const CreateReservation = () => {
 
                 <TrainerItem
                   trainer={trainer}
+                  onClick={() => navigate(`/users/${trainer.id}`)}
                   button={{
                     name: '',
                     icon: <CloseIcon />,
@@ -283,7 +273,10 @@ const CreateReservation = () => {
                       align='center'
                       onClick={() => setTrainer(trainer)}
                     >
-                      <TrainerItem trainer={trainer} />
+                      <TrainerItem
+                        trainer={trainer}
+                        onClick={() => navigate(`/users/${trainer.id}`)}
+                      />
                     </AutoCompleteItem>
                   ))}
                 </AutoCompleteList>
@@ -365,7 +358,7 @@ const CreateReservation = () => {
             {totalSum > 0 && (
               <Stack width='full' marginBottom={5}>
                 <Divider marginTop={5} marginBottom={5} />
-                <Stack alignSelf='flex-end'>
+                <Stack alignSelf='flex-end' paddingRight={5}>
                   <Heading
                     fontSize={{ base: 'sm', md: 'lg' }}
                     fontWeight={500}

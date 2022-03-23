@@ -13,6 +13,7 @@ import GiftCards from './pages/GiftCards'
 import ConsumerGoods from './pages/ConsumerGoods'
 import Reservations from './pages/Reservations'
 import CreateReservation from './pages/Reservations/CreateReservation'
+import ReservationDetail from './pages/Reservations/ReservationDetail'
 
 const Routes = () => {
   return (
@@ -103,6 +104,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <CreateReservation />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/reservations/:reservationId'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <ReservationDetail />
             </DefaultLayout>
           </ProtectedRoute>
         }

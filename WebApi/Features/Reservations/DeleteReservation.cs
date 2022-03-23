@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApi.Common.Constants;
 using WebApi.Common.Exceptions;
 using WebApi.Persistence;
 
@@ -34,7 +35,7 @@ namespace WebApi.Features.Reservations
                 var currentDate = DateTime.Now;
 
                 if (reservation.StartDate < currentDate || reservation.EndDate < currentDate)
-                    throw new BadRequestException();
+                    throw new BadRequestException(ErrorCodes.MustBeInTheFuture);
 
                 _db.Reservations.Remove(reservation);
 

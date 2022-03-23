@@ -6,6 +6,7 @@ import roleColors from '../../../styles/roleColors'
 
 interface TrainerItemProps extends ChakraProps {
   trainer: IUserExtended
+  onClick?: () => void
   button?: {
     name: string
     variant: string
@@ -18,7 +19,7 @@ interface TrainerItemProps extends ChakraProps {
   }
 }
 
-const TrainerItem = ({ trainer, button, ...rest }: TrainerItemProps) => {
+const TrainerItem = ({ trainer, button, onClick, ...rest }: TrainerItemProps) => {
   return (
     <Stack
       my={1}
@@ -34,7 +35,7 @@ const TrainerItem = ({ trainer, button, ...rest }: TrainerItemProps) => {
       {...rest}
     >
       <Tooltip label={trainer.bio} backgroundColor='secondary'>
-        <Flex alignItems='center'>
+        <Flex alignItems='center' cursor={onClick ? 'pointer' : 'default'} onClick={onClick}>
           <Avatar
             size={'sm'}
             src={`https://avatars.dicebear.com/api/adventurer-neutral/${trainer.id}.svg`}
