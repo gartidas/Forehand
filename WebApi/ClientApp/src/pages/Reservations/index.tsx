@@ -35,7 +35,7 @@ const Reservations = () => {
           center: 'title'
         }}
         initialView={isDesktop ? 'timeGridWeek' : 'timeGridDay'}
-        editable={true}
+        editable={false}
         selectable={true}
         selectMirror={true}
         dayMaxEvents={true}
