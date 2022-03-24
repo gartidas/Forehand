@@ -26,7 +26,9 @@ namespace WebApi.Features.Reservations
 
             public async Task<ReservationDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var reservation = await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).ThenInclude(x => x.IdentityUser).Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).ThenInclude(x => x.IdentityUser).SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
+                var reservation = await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).ThenInclude(x => x.IdentityUser)
+                    .Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).ThenInclude(x => x.IdentityUser)
+                    .SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
                 return ReservationDto.Map(reservation);
             }
         }

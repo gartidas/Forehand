@@ -3,7 +3,7 @@ import { Avatar, Heading, Stack, Text } from '@chakra-ui/react'
 import roleColors from '../../styles/roleColors'
 import { useAuthorizedUser } from '../../contextProviders/AuthProvider'
 import { Role } from '../../domainTypes'
-import { toLocalTime } from '../../utils'
+import { toFormattedDate } from '../../utils'
 import { roundToHalf } from '../../pages/Reservations/utils'
 
 const ReservationItem = ({ event }: EventContentArg) => {
@@ -18,7 +18,7 @@ const ReservationItem = ({ event }: EventContentArg) => {
       <>
         <Stack align='center'>
           <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'} color={'primary'}>
-            {`${toLocalTime(start!, 'HH:mm')} - ${toLocalTime(end!, 'HH:mm')}`}
+            {`${toFormattedDate(start!, 'HH:mm')} - ${toFormattedDate(end!, 'HH:mm')}`}
           </Heading>
         </Stack>
 
@@ -41,7 +41,7 @@ const ReservationItem = ({ event }: EventContentArg) => {
     <>
       <Stack align='center'>
         <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'} color={'primary'}>
-          {`${toLocalTime(start!, 'HH:mm')} - ${toLocalTime(end!, 'HH:mm')}`}
+          {`${toFormattedDate(start!, 'HH:mm')} - ${toFormattedDate(end!, 'HH:mm')}`}
         </Heading>
       </Stack>
 

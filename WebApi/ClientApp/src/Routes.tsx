@@ -14,6 +14,7 @@ import ConsumerGoods from './pages/ConsumerGoods'
 import Reservations from './pages/Reservations'
 import CreateReservation from './pages/Reservations/CreateReservation'
 import ReservationDetail from './pages/Reservations/ReservationDetail'
+import UpdateReservation from './pages/Reservations/UpdateReservation'
 
 const Routes = () => {
   return (
@@ -114,6 +115,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <ReservationDetail />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/reservations/:reservationId/update'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <UpdateReservation />
             </DefaultLayout>
           </ProtectedRoute>
         }

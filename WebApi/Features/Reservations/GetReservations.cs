@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -25,7 +26,9 @@ namespace WebApi.Features.Reservations
 
             public async Task<List<ReservationDto>> Handle(Query request, CancellationToken cancellationToken)
             {
+                var currentDate = DateTime.Now;
                 return await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).ThenInclude(x => x.IdentityUser).Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).ThenInclude(x => x.IdentityUser)
+                .Where(x => x.EndDate > currentDate)
                 .OrderBy(x => x.StartDate)
                 .ThenBy(x => x.EndDate)
                 .Select(reservation => ReservationDto.Map(reservation))

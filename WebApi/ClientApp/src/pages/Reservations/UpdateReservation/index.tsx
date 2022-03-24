@@ -17,7 +17,13 @@ import CourtItem from '../../../components/elements/CourtItem'
 import FetchError from '../../../components/elements/FetchError'
 import FormAutoCompleteInput from '../../../components/elements/FormAutoCompleteInput'
 import { NAVBAR_HEIGHT } from '../../../components/modules/Navbar/Navbar'
-import { ICourt, ISportsGear, IUserExtended, ReservationState } from '../../../domainTypes'
+import {
+  ICourt,
+  IReservation,
+  ISportsGear,
+  IUserExtended,
+  ReservationState
+} from '../../../domainTypes'
 import { formatDateForForm, toFormattedDate } from '../../../utils'
 import { requiredValidator } from '../../../utils/validators'
 import api from '../../../api/httpClient'
@@ -42,28 +48,30 @@ interface IFormValue {
   sportsGearIds: string[]
 }
 
-const defaultValues: Partial<IFormValue> = {
-  price: 0,
-  startDate: '',
-  endDate: '',
-  reservationState: ReservationState.Planned,
-  courtId: '',
-  trainerId: '',
-  customerId: '',
-  sportsGearIds: []
-}
-
-const CreateReservation = () => {
+const UpdateReservation = () => {
+  const { reservationId } = useParams()
+  const navigate = useNavigate()
   const [court, setCourt] = useState<ICourt>()
   const [trainer, setTrainer] = useState<IUserExtended>()
   const [sportsGear, setSportsGear] = useState<ISportsGear[]>([])
   const [dropDownSportsGear, setDropDownSportsGear] = useState<ISportsGear[]>([])
-  const navigate = useNavigate()
-  const { fromDate, toDate } = useParams()
-  const date = formatDateForForm(fromDate!)
-  const fromTime = toFormattedDate(fromDate!, 'HH:mm')
-  const toTime = toFormattedDate(toDate!, 'HH:mm')
-  const duration = new Date(toDate!).valueOf() - new Date(fromDate!).valueOf()
+
+  const { data, isLoading, error } = useQuery<IReservation, IApiError>(
+    ['reservations', reservationId],
+    async () => (await api.get(`/reservations/${reservationId}`)).data,
+    {
+      onSuccess: response => {
+        setCourt(response.court)
+        setTrainer(response.trainer)
+        setSportsGear(response.sportsGear)
+      }
+    }
+  )
+
+  const date = data ? formatDateForForm(data.startDate) : ''
+  const fromTime = data ? toFormattedDate(data.startDate, 'HH:mm') : ''
+  const toTime = data ? toFormattedDate(data.endDate, 'HH:mm') : ''
+  const duration = data ? new Date(data.endDate).valueOf() - new Date(data.startDate).valueOf() : 0
   const hours = roundToHalf((duration / (1000 * 60 * 60)) % 24)
   const sportsGearSum = useMemo(
     () =>
@@ -83,20 +91,21 @@ const CreateReservation = () => {
   )
 
   const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
-    url: '/reservations',
+    url: `/reservations/${data!.id}`,
+    method: 'patch',
     formatter: values => ({
       ...values,
       courtId: court!.id,
       trainerId: trainer && trainer.id,
       sportsGearIds: sportsGear.map(x => x.id),
       price: totalSum,
-      startDate: toFormattedDate(fromDate!, 'yyyy-MM-DDTHH:mm:ss'),
-      endDate: toFormattedDate(toDate!, 'yyyy-MM-DDTHH:mm:ss'),
+      startDate: toFormattedDate(data!.startDate, 'yyyy-MM-DDTHH:mm:ss'),
+      endDate: toFormattedDate(data!.endDate, 'yyyy-MM-DDTHH:mm:ss'),
       reservationState: ReservationState.Planned
     }),
     successCallback: () => {
-      successToast('Reservation created successfully.')
-      navigate('/reservations')
+      successToast('Reservation updated successfully.')
+      navigate(`/reservations/${data!.id}`)
     },
     errorCallback: error => apiErrorToast({ data: error, status: 400 })
   })
@@ -106,32 +115,37 @@ const CreateReservation = () => {
     async () =>
       (
         await api.post(`/reservations/items/courts`, {
-          fromDate: toFormattedDate(fromDate!, 'yyyy-MM-DDTHH:mm:ss'),
-          toDate: toFormattedDate(toDate!, 'yyyy-MM-DDTHH:mm:ss')
+          fromDate: toFormattedDate(data!.startDate, 'yyyy-MM-DDTHH:mm:ss'),
+          toDate: toFormattedDate(data!.endDate, 'yyyy-MM-DDTHH:mm:ss')
         })
-      ).data
+      ).data,
+    { enabled: !!data }
   )
   const trainersQuery = useQuery<IUserExtended[], IApiError>(
     ['reservations', 'items', 'trainers'],
     async () =>
       (
         await api.post(`/reservations/items/trainers`, {
-          fromDate: toFormattedDate(fromDate!, 'yyyy-MM-DDTHH:mm:ss'),
-          toDate: toFormattedDate(toDate!, 'yyyy-MM-DDTHH:mm:ss')
+          fromDate: toFormattedDate(data!.startDate, 'yyyy-MM-DDTHH:mm:ss'),
+          toDate: toFormattedDate(data!.endDate, 'yyyy-MM-DDTHH:mm:ss')
         })
-      ).data
+      ).data,
+    { enabled: !!data }
   )
   const sportsGearQuery = useQuery<ISportsGear[], IApiError>(
     ['reservations', 'items', 'sportsGear'],
     async () =>
       (
         await api.post(`/reservations/items/sportsGear`, {
-          fromDate: toFormattedDate(fromDate!, 'yyyy-MM-DDTHH:mm:ss'),
-          toDate: toFormattedDate(toDate!, 'yyyy-MM-DDTHH:mm:ss')
+          fromDate: toFormattedDate(data!.startDate, 'yyyy-MM-DDTHH:mm:ss'),
+          toDate: toFormattedDate(data!.endDate, 'yyyy-MM-DDTHH:mm:ss')
         })
       ).data,
-    { onSuccess: response => setDropDownSportsGear(response) }
+    { onSuccess: response => setDropDownSportsGear(response), enabled: !!data }
   )
+
+  if (error) return <FetchError error={error} />
+  if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
 
   if (courtsQuery.error) return <FetchError error={courtsQuery.error} />
   if (trainersQuery.error) return <FetchError error={trainersQuery.error} />
@@ -175,13 +189,17 @@ const CreateReservation = () => {
               {fromTime}-{toTime}
             </Heading>
           </Stack>
-          <Button variant='primary' onClick={() => navigate('/reservations')} marginRight={5}>
+          <Button
+            variant='primary'
+            onClick={() => navigate(`/reservations/${data.id}`)}
+            marginRight={5}
+          >
             <ChevronLeftIcon />
           </Button>
         </Flex>
 
         <Stack width='full' p={2}>
-          <Form onSubmit={onSubmit} defaultValues={defaultValues}>
+          <Form onSubmit={onSubmit} defaultValues={data}>
             {court ? (
               <>
                 <Flex mb={1}>
@@ -395,4 +413,4 @@ const CreateReservation = () => {
   )
 }
 
-export default CreateReservation
+export default UpdateReservation

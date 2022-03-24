@@ -19,3 +19,7 @@ export const toLocalTime = (date: string | Date, format?: string) => {
     .local()
     .format(format || 'DD MMMM yyyy, HH:mm')
 }
+
+export const toFormattedDate = (date: string | Date, format?: string) => {
+  return moment(date).format(format || 'DD MMMM yyyy, HH:mm')
+}

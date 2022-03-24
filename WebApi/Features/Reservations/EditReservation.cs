@@ -47,25 +47,32 @@ namespace WebApi.Features.Reservations
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var reservation = await _db.Reservations.SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
+                var reservation = await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).ThenInclude(x => x.IdentityUser)
+                    .Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).ThenInclude(x => x.IdentityUser)
+                    .SingleOrNotFoundAsync(x => x.Id == request.ReservationId);
+
+                var currentDate = DateTime.Now;
+
+                if (reservation.StartDate < currentDate || reservation.EndDate < currentDate)
+                    throw new BadRequestException(ErrorCodes.MustBeInTheFuture);
 
                 var customer = await _db.Customers.Include(x => x.IdentityUser).Include(x => x.Reservations).SingleOrNotFoundAsync(x => x.Id == request.CustomerId);
 
                 var court = await _db.Courts.Include(x => x.Reservations).SingleOrNotFoundAsync(x => x.Id == request.CourtId);
 
-                if (court.Reservations.Any(x => x.EndDate > request.StartDate && x.StartDate < request.EndDate))
+                if (court.Reservations.Any(x => x.EndDate > request.StartDate && x.StartDate < request.EndDate && x.Id != request.ReservationId))
                     throw new BadRequestException(ErrorCodes.ReservationForThisDateNotValid);
 
                 var trainer = await _db.Trainers.Include(x => x.IdentityUser).Include(x => x.Reservations).SingleOrDefaultAsync(x => x.Id == request.TrainerId, cancellationToken);
 
-                if (trainer.Reservations.Any(x => x.EndDate > request.StartDate && x.StartDate < request.EndDate))
+                if (trainer.Reservations.Any(x => x.EndDate > request.StartDate && x.StartDate < request.EndDate && x.Id != request.ReservationId))
                     throw new BadRequestException(ErrorCodes.ReservationForThisDateNotValid);
 
                 var sportsGear = await _db.SportsGear.Include(x => x.Reservations).ThenInclude(x => x.Reservation).Where(x => request.SportsGearIds.Any(y => y == x.Id)).ToListAsync(cancellationToken);
 
                 foreach (var item in sportsGear)
                 {
-                    if (item.Reservations.Any(x => x.Reservation.EndDate > request.StartDate && x.Reservation.StartDate < request.EndDate))
+                    if (item.Reservations.Any(x => x.Reservation.EndDate > request.StartDate && x.Reservation.StartDate < request.EndDate && x.Reservation.Id != request.ReservationId))
                         throw new BadRequestException(ErrorCodes.ReservationForThisDateNotValid);
                 }
 

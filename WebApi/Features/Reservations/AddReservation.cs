@@ -48,6 +48,11 @@ namespace WebApi.Features.Reservations
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
+                var currentDate = DateTime.Now;
+
+                if (request.StartDate < currentDate || request.EndDate < currentDate)
+                    throw new BadRequestException(ErrorCodes.MustBeInTheFuture);
+
                 var customer = await _db.Customers.Include(x => x.IdentityUser).Include(x => x.Reservations).SingleOrNotFoundAsync(x => x.Id == request.CustomerId);
 
                 var court = await _db.Courts.Include(x => x.Reservations).SingleOrNotFoundAsync(x => x.Id == request.CourtId);

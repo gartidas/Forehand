@@ -16,12 +16,12 @@ import CourtItem from '../../../components/elements/CourtItem'
 import FetchError from '../../../components/elements/FetchError'
 import { NAVBAR_HEIGHT } from '../../../components/modules/Navbar/Navbar'
 import { IReservation } from '../../../domainTypes'
-import { formatDateForForm, toLocalTime } from '../../../utils'
+import { formatDateForForm, toFormattedDate } from '../../../utils'
 import api from '../../../api/httpClient'
 import { ChevronLeftIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { roundToHalf } from '../utils'
 import SportsGearItem from '../../../components/elements/SportsGearItem'
-import TrainerItem from '../CreateReservation/TrainerItem'
+import TrainerItem from '../ReservationItems/TrainerItem'
 import { WobblyDiv } from '../../../components/modules/WobblyDiv/WobblyDiv'
 import { apiErrorToast, successToast } from '../../../services/toastService'
 
@@ -48,8 +48,8 @@ const ReservationDetail = () => {
   if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
 
   const date = formatDateForForm(data.startDate)
-  const fromTime = toLocalTime(data.startDate, 'HH:mm')
-  const toTime = toLocalTime(data.endDate, 'HH:mm')
+  const fromTime = toFormattedDate(data.startDate, 'HH:mm')
+  const toTime = toFormattedDate(data.endDate, 'HH:mm')
   const duration = new Date(data.endDate).valueOf() - new Date(data.startDate).valueOf()
   const hours = roundToHalf((duration / (1000 * 60 * 60)) % 24)
   const sportsGearSum =
@@ -72,7 +72,10 @@ const ReservationDetail = () => {
       <Stack spacing={2} alignItems='center'>
         <Flex alignItems='center' width='full' backgroundColor='bg2'>
           <WobblyDiv marginRight={3} marginLeft={3}>
-            <Button variant='secondary' onClick={() => {}}>
+            <Button
+              variant='secondary'
+              onClick={() => navigate(`/reservations/${reservationId}/update`)}
+            >
               <EditIcon />
             </Button>
           </WobblyDiv>

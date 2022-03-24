@@ -9,12 +9,15 @@ import { useNavigate } from 'react-router'
 import reservationStateColors from '../../styles/reservationStateColors'
 import { ReservationState } from '../../domainTypes'
 import ReservationItem from '../../components/elements/ReservationItem'
-import { toLocalTime } from '../../utils'
+import { toFormattedDate } from '../../utils'
 import { useReservations } from '../../contextProviders/ReservationsProvider'
 import FetchError from '../../components/elements/FetchError'
 import { mapReservationsToCalendar } from './utils'
+import { useAuthorizedUser } from '../../contextProviders/AuthProvider'
+import { errorToast } from '../../services/toastService'
 
 const Reservations = () => {
+  const { currentUser } = useAuthorizedUser()
   const { reservations, error, isLoading } = useReservations()
   const navigate = useNavigate()
   const isDesktop = useWindowSize().width > 1200
@@ -41,11 +44,20 @@ const Reservations = () => {
         titleFormat={{ month: 'long', year: 'numeric' }}
         views={{ week: { dayHeaderFormat: { weekday: 'long', day: 'numeric' } } }}
         firstDay={1}
-        eventClick={eventBlock => navigate(`/reservations/${eventBlock.event.id}`)}
+        eventClick={({ event }) => {
+          const { _def } = event
+          const { extendedProps } = _def
+
+          extendedProps.customer === currentUser.id
+            ? navigate(`/reservations/${event.id}`)
+            : errorToast('NotCurrentUsersEvent')
+        }}
         eventColor={reservationStateColors[ReservationState.Planned]}
         eventContent={blockEvent => <ReservationItem {...blockEvent} />}
         select={event =>
-          navigate(`/reservations/new/${toLocalTime(event.start)}/${toLocalTime(event.end)}`)
+          navigate(
+            `/reservations/new/${toFormattedDate(event.start)}/${toFormattedDate(event.end)}`
+          )
         }
         allDaySlot={false}
         businessHours={{
