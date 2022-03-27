@@ -41,7 +41,7 @@ namespace WebApi.Features.Auth
 
                 if (user.Role == RoleEnum.Trainer)
                 {
-                    var trainer = await _db.Trainers.AsQueryable().Where(x => x.Id == request.CurrentUserId).SingleOrDefaultAsync(cancellationToken);
+                    var trainer = await _db.Trainers.Include(x => x.RatedBy).AsQueryable().Where(x => x.Id == request.CurrentUserId).SingleOrDefaultAsync(cancellationToken);
                     response.Bio = trainer.Bio;
                     response.Rating = trainer.Rating;
                     response.ReservationPrice = trainer.ReservationPrice;

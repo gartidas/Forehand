@@ -3,7 +3,7 @@ import { useQueryClient } from 'react-query'
 import { IUserExtended } from '../domainTypes'
 import * as authService from '../services/authService'
 
-export const IS_SIGNED_IN_LOCAL_STORAGE_KEY = 'FIESTA.is_signed_in'
+export const IS_SIGNED_IN_LOCAL_STORAGE_KEY = 'FOREHAND.is_signed_in'
 
 type IAuthContextValue =
   | {

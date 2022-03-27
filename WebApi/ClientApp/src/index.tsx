@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import AuthProvider from './contextProviders/AuthProvider'
+import OrdersProvider from './contextProviders/OrdersProvider'
 import ReservationsProvider from './contextProviders/ReservationsProvider'
 import * as serviceWorker from './serviceWorker'
 import { GlobalStyles } from './styles/GlobalStyles'
@@ -20,10 +21,12 @@ ReactDOM.render(
       <BrowserRouter>
         <AuthProvider>
           <ReservationsProvider>
-            <GlobalStyles />
-            <ChakraProvider theme={theme}>
-              <App />
-            </ChakraProvider>
+            <OrdersProvider>
+              <GlobalStyles />
+              <ChakraProvider theme={theme}>
+                <App />
+              </ChakraProvider>
+            </OrdersProvider>
           </ReservationsProvider>
         </AuthProvider>
       </BrowserRouter>

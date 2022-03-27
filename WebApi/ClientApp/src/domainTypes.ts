@@ -97,3 +97,38 @@ export enum ReservationState {
   Fulfilled = 4,
   NotFulfilled = 5
 }
+
+export enum OrderItemType {
+  Unknown = 0,
+  Reservation = 1,
+  GiftCard = 2,
+  ConsumerGoods = 3
+}
+
+export interface IOrder {
+  id: string
+  creationDate: string
+  trackingNumber: number
+  paymentMethod: PaymentMethod
+  orderState: OrderState
+  totalSum: number
+  customer: IUser
+  employee: IUser
+  giftCards: IGiftCard[]
+  consumerGoods: IConsumerGoods[]
+  reservations: IReservation[]
+}
+
+export enum PaymentMethod {
+  Unknown,
+  Cash,
+  CreditCard,
+  DebitCard
+}
+
+export enum OrderState {
+  Unknown = 0,
+  NotFulfilled = 1,
+  Fulfilled = 2,
+  Refunded = 3
+}

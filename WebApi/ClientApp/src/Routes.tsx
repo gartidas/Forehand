@@ -15,6 +15,8 @@ import Reservations from './pages/Reservations'
 import CreateReservation from './pages/Reservations/CreateReservation'
 import ReservationDetail from './pages/Reservations/ReservationDetail'
 import UpdateReservation from './pages/Reservations/UpdateReservation'
+import Cart from './pages/Cart'
+import TrainerReservations from './pages/TrainerReservations'
 
 const Routes = () => {
   return (
@@ -100,6 +102,16 @@ const Routes = () => {
         }
       />
       <Route
+        path='/reservations/trainer'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <TrainerReservations />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path='/reservations/new/:fromDate/:toDate'
         element={
           <ProtectedRoute>
@@ -129,7 +141,16 @@ const Routes = () => {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path='/cart'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <Cart />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='/' element={<LandingPage />} />

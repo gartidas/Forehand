@@ -7,11 +7,15 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
-  Text
+  Text,
+  Icon
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router'
 import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
 import roleColors from '../../../styles/roleColors'
+import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai'
+import { FiSettings } from 'react-icons/fi'
+import CartIcon from '../../elements/CartIcon'
 
 const MenuDropdown = () => {
   const { currentUser, logout } = useAuthorizedUser()
@@ -42,10 +46,27 @@ const MenuDropdown = () => {
           </Flex>
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => navigate(`/users/${currentUser.id}`)}>Profile</MenuItem>
-          <MenuItem>Settings</MenuItem>
+          <MenuItem onClick={() => navigate(`/users/${currentUser.id}`)}>
+            <Flex width='full' justifyContent='center'>
+              <Icon as={AiOutlineUser} />
+            </Flex>
+          </MenuItem>
+          <MenuItem onClick={() => navigate(`/cart`)}>
+            <Flex width='full' justifyContent='center'>
+              <CartIcon />
+            </Flex>
+          </MenuItem>
+          <MenuItem>
+            <Flex width='full' justifyContent='center'>
+              <Icon as={FiSettings} />
+            </Flex>
+          </MenuItem>
           <MenuDivider />
-          <MenuItem onClick={() => logout()}>Logout</MenuItem>
+          <MenuItem onClick={() => logout()}>
+            <Flex width='full' justifyContent='center'>
+              <Icon as={AiOutlineLogout} />
+            </Flex>
+          </MenuItem>
         </MenuList>
       </Menu>
     </Flex>

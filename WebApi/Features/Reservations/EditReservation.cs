@@ -15,7 +15,7 @@ namespace WebApi.Features.Reservations
 {
     public class EditReservation
     {
-        public class Command : IRequest<Unit>
+        public class Command : IRequest<ReservationDto>
         {
             [JsonIgnore]
             public string ReservationId { get; set; }
@@ -36,7 +36,7 @@ namespace WebApi.Features.Reservations
             public List<string> SportsGearIds { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Unit>
+        public class Handler : IRequestHandler<Command, ReservationDto>
         {
             private readonly ForehandContext _db;
 
@@ -45,7 +45,7 @@ namespace WebApi.Features.Reservations
                 _db = db;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ReservationDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var reservation = await _db.Reservations.Include(x => x.Court).Include(x => x.Customer).ThenInclude(x => x.IdentityUser)
                     .Include(x => x.SportsGear).ThenInclude(x => x.SportsGear).Include(x => x.Trainer).ThenInclude(x => x.IdentityUser)
@@ -80,7 +80,7 @@ namespace WebApi.Features.Reservations
 
                 await _db.SaveChangesAsync(cancellationToken);
 
-                return Unit.Value;
+                return ReservationDto.Map(reservation);
             }
         }
 

@@ -21,18 +21,22 @@ namespace WebApi.Controllers
         public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservations(CancellationToken cancellationToken)
           => await Mediator.Send(new GetReservations.Query(), cancellationToken);
 
-        [Authorize(nameof(RoleEnum.BasicUser))]
+        [Authorize(nameof(RoleEnum.Trainer))]
+        [HttpGet("calendar/trainers/{id}")]
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservationsForTrainer([FromRoute] string id, CancellationToken cancellationToken)
+        => await Mediator.Send(new GetReservationsForTrainer.Query() { TrainerId = id }, cancellationToken);
+
+        [Authorize()]
         [HttpGet("{id}")]
         public async Task<ActionResult<ReservationDto>> GetReservation([FromRoute] string id, CancellationToken cancellationToken)
            => await Mediator.Send(new GetReservation.Query() { ReservationId = id }, cancellationToken);
 
         [Authorize(nameof(RoleEnum.BasicUser))]
         [HttpPost]
-        public async Task<ActionResult> AddReservation(AddReservation.Command command, CancellationToken cancellationToken)
+        public async Task<ActionResult<ReservationDto>> AddReservation(AddReservation.Command command, CancellationToken cancellationToken)
         {
             command.CustomerId = CurrentUserService.UserId;
-            await Mediator.Send(command, cancellationToken);
-            return Ok();
+            return Ok(await Mediator.Send(command, cancellationToken));
         }
 
         [Authorize(nameof(RoleEnum.BasicUser))]

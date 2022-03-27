@@ -90,7 +90,7 @@ const UpdateReservation = () => {
     [courtSum, trainerSum, sportsGearSum]
   )
 
-  const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
+  const { submitting, onSubmit } = useSubmitForm<IFormValue, IReservation>({
     url: `/reservations/${data!.id}`,
     method: 'patch',
     formatter: values => ({
@@ -103,7 +103,7 @@ const UpdateReservation = () => {
       endDate: toFormattedDate(data!.endDate, 'yyyy-MM-DDTHH:mm:ss'),
       reservationState: ReservationState.Planned
     }),
-    successCallback: () => {
+    successCallback: data => {
       successToast('Reservation updated successfully.')
       navigate(`/reservations/${data!.id}`)
     },

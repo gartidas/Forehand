@@ -17,7 +17,7 @@ namespace WebApi.Features.Reservations
 {
     public class AddReservation
     {
-        public class Command : IRequest<Unit>
+        public class Command : IRequest<ReservationDto>
         {
             [JsonIgnore]
             public string CustomerId { get; set; }
@@ -35,7 +35,7 @@ namespace WebApi.Features.Reservations
             public List<string> SportsGearIds { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Unit>
+        public class Handler : IRequestHandler<Command, ReservationDto>
         {
             private readonly ForehandContext _db;
             private readonly IHubContext<ReservationsHub, IReservationsClient> _reservationsHub;
@@ -46,7 +46,7 @@ namespace WebApi.Features.Reservations
                 _reservationsHub = reservationsHub;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ReservationDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var currentDate = DateTime.Now;
 
@@ -83,7 +83,7 @@ namespace WebApi.Features.Reservations
 
                 await _reservationsHub.Clients.All.ReceiveReservation(ReservationDto.Map(reservation));
 
-                return Unit.Value;
+                return ReservationDto.Map(reservation);
             }
         }
 

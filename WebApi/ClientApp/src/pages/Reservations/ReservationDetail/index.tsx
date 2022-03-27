@@ -15,7 +15,7 @@ import { IApiError } from '../../../api/types'
 import CourtItem from '../../../components/elements/CourtItem'
 import FetchError from '../../../components/elements/FetchError'
 import { NAVBAR_HEIGHT } from '../../../components/modules/Navbar/Navbar'
-import { IReservation } from '../../../domainTypes'
+import { IReservation, OrderItemType, ReservationState, Role } from '../../../domainTypes'
 import { formatDateForForm, toFormattedDate } from '../../../utils'
 import api from '../../../api/httpClient'
 import { ChevronLeftIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
@@ -24,9 +24,13 @@ import SportsGearItem from '../../../components/elements/SportsGearItem'
 import TrainerItem from '../ReservationItems/TrainerItem'
 import { WobblyDiv } from '../../../components/modules/WobblyDiv/WobblyDiv'
 import { apiErrorToast, successToast } from '../../../services/toastService'
+import { useOrders } from '../../../contextProviders/OrdersProvider'
+import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
 
 const ReservationDetail = () => {
+  const { currentUser } = useAuthorizedUser()
   const navigate = useNavigate()
+  const { removeOrderItem } = useOrders()
   const { reservationId } = useParams()
 
   const { data, isLoading, error } = useQuery<IReservation, IApiError>(
@@ -37,6 +41,7 @@ const ReservationDetail = () => {
   const deleteReservation = async () => {
     try {
       await api.delete(`/reservations/${reservationId}`)
+      removeOrderItem(reservationId!, OrderItemType.Reservation)
       successToast('Reservation deleted.')
       navigate('/reservations')
     } catch (err) {
@@ -71,19 +76,23 @@ const ReservationDetail = () => {
     >
       <Stack spacing={2} alignItems='center'>
         <Flex alignItems='center' width='full' backgroundColor='bg2'>
-          <WobblyDiv marginRight={3} marginLeft={3}>
-            <Button
-              variant='secondary'
-              onClick={() => navigate(`/reservations/${reservationId}/update`)}
-            >
-              <EditIcon />
-            </Button>
-          </WobblyDiv>
-          <WobblyDiv>
-            <Button variant='warning' onClick={deleteReservation}>
-              <DeleteIcon />
-            </Button>
-          </WobblyDiv>
+          {data.reservationState === ReservationState.Planned && (
+            <>
+              <WobblyDiv marginRight={3} marginLeft={3}>
+                <Button
+                  variant='secondary'
+                  onClick={() => navigate(`/reservations/${reservationId}/update`)}
+                >
+                  <EditIcon />
+                </Button>
+              </WobblyDiv>
+              <WobblyDiv>
+                <Button variant='warning' onClick={deleteReservation}>
+                  <DeleteIcon />
+                </Button>
+              </WobblyDiv>
+            </>
+          )}
           <Stack alignItems='center' width='full' py={2}>
             <Heading
               fontSize={{ base: 'sm', md: 'lg' }}
@@ -102,7 +111,15 @@ const ReservationDetail = () => {
               {fromTime}-{toTime}
             </Heading>
           </Stack>
-          <Button variant='primary' onClick={() => navigate('/reservations')} marginRight={5}>
+          <Button
+            variant='primary'
+            onClick={() =>
+              navigate(
+                currentUser.role === Role.Trainer ? '/reservations/trainer' : '/reservations'
+              )
+            }
+            marginRight={5}
+          >
             <ChevronLeftIcon />
           </Button>
         </Flex>

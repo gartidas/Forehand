@@ -58,11 +58,11 @@ namespace WebApi.Domain
 
         public IReadOnlyCollection<ReservationSportsGear> SportsGear => _sportsGear;
 
-        public void FulfillReservation(Order order)
+        public void ConfirmReservation(Order order)
         {
             Order = order;
             OrderId = order.Id;
-            ReservationState = ReservationState.Fulfilled;
+            ReservationState = ReservationState.Confirmed;
         }
 
         public void AddSportsGear(List<SportsGear> sportsGear)

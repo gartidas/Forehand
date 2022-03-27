@@ -17,7 +17,13 @@ import CourtItem from '../../../components/elements/CourtItem'
 import FetchError from '../../../components/elements/FetchError'
 import FormAutoCompleteInput from '../../../components/elements/FormAutoCompleteInput'
 import { NAVBAR_HEIGHT } from '../../../components/modules/Navbar/Navbar'
-import { ICourt, ISportsGear, IUserExtended, ReservationState } from '../../../domainTypes'
+import {
+  ICourt,
+  IReservation,
+  ISportsGear,
+  IUserExtended,
+  ReservationState
+} from '../../../domainTypes'
 import { formatDateForForm, toFormattedDate } from '../../../utils'
 import { requiredValidator } from '../../../utils/validators'
 import api from '../../../api/httpClient'
@@ -30,6 +36,7 @@ import { ChevronLeftIcon, CloseIcon } from '@chakra-ui/icons'
 import TrainerItem from '../ReservationItems/TrainerItem'
 import { roundToHalf } from '../utils'
 import SportsGearItem from '../../../components/elements/SportsGearItem'
+import { useOrders } from '../../../contextProviders/OrdersProvider'
 
 interface IFormValue {
   price: number
@@ -59,6 +66,7 @@ const CreateReservation = () => {
   const [sportsGear, setSportsGear] = useState<ISportsGear[]>([])
   const [dropDownSportsGear, setDropDownSportsGear] = useState<ISportsGear[]>([])
   const navigate = useNavigate()
+  const { addReservation } = useOrders()
   const { fromDate, toDate } = useParams()
   const date = formatDateForForm(fromDate!)
   const fromTime = toFormattedDate(fromDate!, 'HH:mm')
@@ -82,7 +90,7 @@ const CreateReservation = () => {
     [courtSum, trainerSum, sportsGearSum]
   )
 
-  const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
+  const { submitting, onSubmit } = useSubmitForm<IFormValue, IReservation>({
     url: '/reservations',
     formatter: values => ({
       ...values,
@@ -94,7 +102,8 @@ const CreateReservation = () => {
       endDate: toFormattedDate(toDate!, 'yyyy-MM-DDTHH:mm:ss'),
       reservationState: ReservationState.Planned
     }),
-    successCallback: () => {
+    successCallback: data => {
+      addReservation(data)
       successToast('Reservation created successfully.')
       navigate('/reservations')
     },

@@ -26,34 +26,31 @@ namespace WebApi.Features.Reservations
 
         public UserDto Customer { get; set; }
 
-        //public OrderDto Order { get; set; }
-
         public List<SportsGearDto> SportsGear { get; set; }
 
         public static ReservationDto Map(Reservation reservation)
             => new ReservationDto()
             {
                 Id = reservation.Id,
-                Court = new CourtDto()
+                Court = reservation.Court is not null ? new CourtDto()
                 {
                     Id = reservation.Court.Id,
                     Label = reservation.Court.Label,
                     Description = reservation.Court.Description,
                     ReservationPrice = reservation.Court.ReservationPrice,
-                },
-                Customer = new UserDto()
+                } : null,
+                Customer = reservation.Customer is not null ? new UserDto()
                 {
                     Id = reservation.Customer.IdentityUser.Id,
                     Email = reservation.Customer.IdentityUser.Email,
                     GivenName = reservation.Customer.IdentityUser.GivenName,
                     Surname = reservation.Customer.IdentityUser.Surname,
                     Role = reservation.Customer.IdentityUser.Role,
-                },
+                } : null,
                 EndDate = reservation.EndDate,
-                //Order = reservation.Order,
                 Price = reservation.Price,
                 ReservationState = reservation.ReservationState,
-                SportsGear = reservation.SportsGear.Select(x => new SportsGearDto()
+                SportsGear = reservation.SportsGear is not null ? reservation.SportsGear.Select(x => new SportsGearDto()
                 {
                     Id = x.SportsGear.Id,
                     ReservationPrice = x.SportsGear.ReservationPrice,
@@ -64,7 +61,7 @@ namespace WebApi.Features.Reservations
                     ProductionYear = x.SportsGear.ProductionYear,
                     PhysicalState = x.SportsGear.PhysicalState,
                     Manufacturer = x.SportsGear.Manufacturer,
-                }).ToList(),
+                }).ToList() : null,
                 StartDate = reservation.StartDate,
                 Trainer = reservation.Trainer is not null ? new UserDto()
                 {
