@@ -101,10 +101,6 @@ namespace WebApi.Features.Orders
         {
             public Validator()
             {
-                RuleFor(x => x.TotalSum)
-                    .NotEmpty().WithErrorCode(ErrorCodes.Required)
-                    .Must(x => x > 0).WithErrorCode(ErrorCodes.MinimalValue).WithState(_ => new { Min = 0 });
-
                 RuleFor(x => x.PaymentMethod).Must(x => x > 0 && (int)x < 4).WithErrorCode(ErrorCodes.NotSupported);
 
                 RuleFor(x => x.OrderState).Must(x => x > 0 && (int)x < 4).WithErrorCode(ErrorCodes.NotSupported);

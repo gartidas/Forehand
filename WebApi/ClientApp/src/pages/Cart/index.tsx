@@ -7,6 +7,7 @@ import {
   FormLabel,
   Heading,
   Icon,
+  Spinner,
   Stack,
   Text,
   useRadioGroup
@@ -15,7 +16,14 @@ import { useMemo, useState } from 'react'
 import { IApiError } from '../../api/types'
 import { NAVBAR_HEIGHT } from '../../components/modules/Navbar/Navbar'
 import { useOrders } from '../../contextProviders/OrdersProvider'
-import { IOrder, OrderItemType, OrderState, PaymentMethod } from '../../domainTypes'
+import {
+  IGiftCard,
+  IOrder,
+  OrderItemType,
+  OrderState,
+  PaymentMethod,
+  Role
+} from '../../domainTypes'
 import { apiErrorToast, successToast } from '../../services/toastService'
 import ReservationItem from './OrderItems/ReservationItem'
 import api from '../../api/httpClient'
@@ -27,6 +35,11 @@ import PaymentMethodRadio from '../../components/elements/PaymentMethodRadio'
 import { BsCash, BsCreditCard2Back, BsCreditCard2BackFill } from 'react-icons/bs'
 import ConsumerGoodsItem from './OrderItems/ConsumerGoodsItem'
 import GiftCardItem from './OrderItems/GiftCardItem'
+import { useAuthorizedUser } from '../../contextProviders/AuthProvider'
+import { useQuery } from 'react-query'
+import FetchError from '../../components/elements/FetchError'
+import FormAutoCompleteInput from '../../components/elements/FormAutoCompleteInput'
+import { AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete'
 
 interface IFormValue {
   paymentMethod: PaymentMethod
@@ -47,6 +60,8 @@ const defaultValues: Partial<IFormValue> = {
 }
 
 const Cart = () => {
+  const [usableGiftCard, setUsableGiftCard] = useState<IGiftCard>()
+  const { currentUser } = useAuthorizedUser()
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.Cash)
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'paymentMethod',
@@ -76,10 +91,14 @@ const Cart = () => {
         : 0,
     [giftCards]
   )
-  const totalSum = useMemo(
-    () => reservationsSum + consumerGoodsSum + giftCardsSum,
-    [reservationsSum, consumerGoodsSum, giftCardsSum]
+  const giftCardReduction = useMemo(
+    () => (usableGiftCard ? usableGiftCard.price : 0),
+    [usableGiftCard]
   )
+  const totalSum = useMemo(() => {
+    const total = reservationsSum + consumerGoodsSum + giftCardsSum - giftCardReduction
+    return total > 0 ? total : 0
+  }, [reservationsSum, consumerGoodsSum, giftCardsSum, giftCardReduction])
 
   const deleteReservation = async (reservationId: string) => {
     try {
@@ -101,6 +120,20 @@ const Cart = () => {
     successToast('Gift card removed.')
   }
 
+  const { data, isLoading, error } = useQuery<IGiftCard[], IApiError>(
+    ['cart', 'gift-cards', 'customer', currentUser.id],
+    async () => (await api.get(`/gift-cards/customer/${currentUser.id}`)).data,
+    { enabled: currentUser.role === Role.BasicUser }
+  )
+
+  const applyGiftCard = async (giftCardId: string) => {
+    try {
+      await api.delete(`/gift-cards/${giftCardId}/use`)
+    } catch (err) {
+      apiErrorToast(err as IApiError)
+    }
+  }
+
   const { submitting, onSubmit } = useSubmitForm<IFormValue, IOrder>({
     url: '/orders',
     formatter: values => ({
@@ -113,11 +146,18 @@ const Cart = () => {
       reservationIds: reservations ? reservations.map(x => x.id) : []
     }),
     successCallback: data => {
+      if (usableGiftCard) {
+        applyGiftCard(usableGiftCard.id)
+        setUsableGiftCard(undefined)
+      }
       clearCart()
       successToast('Order created successfully.')
     },
     errorCallback: error => apiErrorToast({ data: error, status: 400 })
   })
+
+  if (error) return <FetchError error={error} />
+  if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
 
   return (
     <Stack
@@ -222,9 +262,9 @@ const Cart = () => {
             </Box>
           )}
 
-          {giftCards && giftCards.length > 0 && (
+          {giftCards && giftCards.length > 0 ? (
             <Box width='full'>
-              <FormLabel m={0}>Consumer goods</FormLabel>
+              <FormLabel m={0}>Gift cards</FormLabel>
 
               {giftCards.map(x => (
                 <GiftCardItem
@@ -262,9 +302,56 @@ const Cart = () => {
 
               <Divider marginTop={5} marginBottom={10} />
             </Box>
+          ) : (
+            <>
+              {orderItemsCount > 0 && (consumerGoods === undefined || consumerGoods.length === 0) && (
+                <Box width='full'>
+                  {usableGiftCard ? (
+                    <>
+                      <FormLabel m={0}>Gift card</FormLabel>
+                      <GiftCardItem
+                        giftCard={usableGiftCard}
+                        button={{
+                          name: '',
+                          icon: <CloseIcon />,
+                          variant: 'warning',
+                          onClick: () => setUsableGiftCard(undefined)
+                        }}
+                      />
+
+                      <Flex justifyContent='flex-end' marginTop={5}>
+                        <Stack spacing={0} align={'center'}>
+                          <Text fontSize={'sm'} color={'tertiary'}>
+                            Subtotal:
+                          </Text>
+                          <Text fontWeight={600}>{`- ${usableGiftCard.price} €`}</Text>
+                        </Stack>
+                      </Flex>
+                    </>
+                  ) : (
+                    <FormAutoCompleteInput name='giftCard' label='Gift card' width='full'>
+                      <AutoCompleteList>
+                        {data.map(x => (
+                          <AutoCompleteItem
+                            key={`option-${x.id}`}
+                            value={x.id}
+                            align='center'
+                            onClick={() => setUsableGiftCard(x)}
+                          >
+                            <GiftCardItem giftCard={x} />
+                          </AutoCompleteItem>
+                        ))}
+                      </AutoCompleteList>
+                    </FormAutoCompleteInput>
+                  )}
+
+                  <Divider marginTop={5} marginBottom={10} />
+                </Box>
+              )}
+            </>
           )}
 
-          {totalSum > 0 && (
+          {orderItemsCount > 0 && (
             <>
               <Stack width='full' marginBottom={5}>
                 <Stack alignSelf='flex-end' paddingRight={5}>

@@ -16,6 +16,11 @@ namespace WebApi.Controllers
         public async Task<ActionResult<IEnumerable<GetGiftCards.GiftCardDto>>> GetGiftCards(string search, CancellationToken cancellationToken)
          => await Mediator.Send(new GetGiftCards.Query() { Search = search }, cancellationToken);
 
+        [Authorize()]
+        [HttpGet("customer/{id}")]
+        public async Task<ActionResult<IEnumerable<GetGiftCards.GiftCardDto>>> GetGiftCardsForCustomer([FromRoute] string id, CancellationToken cancellationToken)
+       => await Mediator.Send(new GetGiftCardsForCustomer.Query() { CustomerId = id }, cancellationToken);
+
         [Authorize(nameof(RoleEnum.Employee))]
         [HttpPost]
         public async Task<ActionResult> AddGiftCard(AddGiftCard.Command command, CancellationToken cancellationToken)
@@ -37,6 +42,14 @@ namespace WebApi.Controllers
         public async Task<ActionResult> DeleteGiftCard([FromRoute] string id, CancellationToken cancellationToken)
         {
             await Mediator.Send(new DeleteGiftCard.Command { GiftCardId = id }, cancellationToken);
+            return Ok();
+        }
+
+        [Authorize(nameof(RoleEnum.BasicUser))]
+        [HttpDelete("{id}/use")]
+        public async Task<ActionResult> UseGiftCard([FromRoute] string id, CancellationToken cancellationToken)
+        {
+            await Mediator.Send(new UseGiftCard.Command { GiftCardId = id, CustomerId = CurrentUserService.UserId }, cancellationToken);
             return Ok();
         }
     }
