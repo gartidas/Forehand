@@ -19,8 +19,10 @@ import { AddIcon, SearchIcon } from '@chakra-ui/icons'
 import { IConsumerGoods } from '../../domainTypes'
 import ConsumerGoodsItem from '../../components/elements/ConsumerGoodsItem'
 import ConsumerGoodsDetail from './ConsumerGoodsDetail'
+import { useOrders } from '../../contextProviders/OrdersProvider'
 
 const ConsumerGoods = () => {
+  const { consumerGoods: goodsInCart } = useOrders()
   const [consumerGoods, setConsumerGoods] = useState<IConsumerGoods>()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [search, setSearch] = useState('')
@@ -33,6 +35,10 @@ const ConsumerGoods = () => {
 
   if (error) return <FetchError error={error} />
   if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
+
+  const filteredData = goodsInCart
+    ? data.filter(x => goodsInCart.find(y => y.id === x.id) === undefined)
+    : data
 
   return (
     <>
@@ -68,7 +74,7 @@ const ConsumerGoods = () => {
         </Button>
       </Flex>
       <Flex gap={3} mt={4} direction='column'>
-        {data.map(x => (
+        {filteredData.map(x => (
           <ConsumerGoodsItem
             key={x.id}
             consumerGoods={x}
@@ -80,7 +86,7 @@ const ConsumerGoods = () => {
         ))}
       </Flex>
 
-      {!isFetching && data.length === 0 && <Box marginTop={3}>Nothing found</Box>}
+      {!isFetching && filteredData.length === 0 && <Box marginTop={3}>Nothing found</Box>}
 
       {isOpen && (
         <ConsumerGoodsDetail

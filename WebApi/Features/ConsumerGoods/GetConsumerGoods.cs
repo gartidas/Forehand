@@ -31,6 +31,8 @@ namespace WebApi.Features.ConsumerGoods
             {
                 if (request.Search is null)
                     return await _db.ConsumerGoods
+                    .Include(x => x.Order)
+                    .Where(x => x.Order == null)
                     .Select(x => new ConsumerGoodsDto
                     {
                         Id = x.Id,
@@ -44,6 +46,8 @@ namespace WebApi.Features.ConsumerGoods
                     .ToListAsync(cancellationToken);
 
                 return await _db.ConsumerGoods
+                    .Include(x => x.Order)
+                    .Where(x => x.Order == null)
                     .Where(x => (x.Name).Contains(request.Search))
                     .Select(x => new ConsumerGoodsDto
                     {

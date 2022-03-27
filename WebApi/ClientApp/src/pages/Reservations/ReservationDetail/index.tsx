@@ -110,6 +110,18 @@ const ReservationDetail = () => {
             >
               {fromTime}-{toTime}
             </Heading>
+            {currentUser.role === Role.Trainer && (
+              <Heading
+                cursor='pointer'
+                fontSize={{ base: 'sm', md: 'lg' }}
+                fontWeight={500}
+                fontFamily={'body'}
+                color={'primary'}
+                onClick={() => navigate(`/users/${data.customer.id}`)}
+              >
+                {`(${data.customer.email})`}
+              </Heading>
+            )}
           </Stack>
           <Button
             variant='primary'

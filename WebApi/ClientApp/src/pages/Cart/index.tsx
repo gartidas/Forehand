@@ -25,6 +25,8 @@ import { useSubmitForm } from '../../components/modules/HookForm/hooks/useSubmit
 import CartIcon from '../../components/elements/CartIcon'
 import PaymentMethodRadio from '../../components/elements/PaymentMethodRadio'
 import { BsCash, BsCreditCard2Back, BsCreditCard2BackFill } from 'react-icons/bs'
+import ConsumerGoodsItem from './OrderItems/ConsumerGoodsItem'
+import GiftCardItem from './OrderItems/GiftCardItem'
 
 interface IFormValue {
   paymentMethod: PaymentMethod
@@ -51,7 +53,8 @@ const Cart = () => {
     defaultValue: PaymentMethod[paymentMethod],
     onChange: value => setPaymentMethod(PaymentMethod[value as keyof typeof PaymentMethod])
   })
-  const { reservations, orderItemsCount, removeOrderItem, clearCart } = useOrders()
+  const { reservations, consumerGoods, giftCards, orderItemsCount, removeOrderItem, clearCart } =
+    useOrders()
   const reservationsSum = useMemo(
     () =>
       reservations && reservations.length > 0
@@ -59,16 +62,43 @@ const Cart = () => {
         : 0,
     [reservations]
   )
-  const totalSum = useMemo(() => reservationsSum, [reservationsSum])
+  const consumerGoodsSum = useMemo(
+    () =>
+      consumerGoods && consumerGoods.length > 0
+        ? consumerGoods.reduce((sum, current) => sum + current.price, 0)
+        : 0,
+    [consumerGoods]
+  )
+  const giftCardsSum = useMemo(
+    () =>
+      giftCards && giftCards.length > 0
+        ? giftCards.reduce((sum, current) => sum + current.price, 0)
+        : 0,
+    [giftCards]
+  )
+  const totalSum = useMemo(
+    () => reservationsSum + consumerGoodsSum + giftCardsSum,
+    [reservationsSum, consumerGoodsSum, giftCardsSum]
+  )
 
   const deleteReservation = async (reservationId: string) => {
     try {
       await api.delete(`/reservations/${reservationId}`)
       removeOrderItem(reservationId!, OrderItemType.Reservation)
-      successToast('Reservation deleted.')
+      successToast('Reservation removed.')
     } catch (err) {
       apiErrorToast(err as IApiError)
     }
+  }
+
+  const deleteConsumerGoods = async (consumerGoodsId: string) => {
+    removeOrderItem(consumerGoodsId!, OrderItemType.ConsumerGoods)
+    successToast('Product removed.')
+  }
+
+  const deleteGiftCard = async (giftCardId: string) => {
+    removeOrderItem(giftCardId!, OrderItemType.GiftCard)
+    successToast('Gift card removed.')
   }
 
   const { submitting, onSubmit } = useSubmitForm<IFormValue, IOrder>({
@@ -78,8 +108,8 @@ const Cart = () => {
       paymentMethod: paymentMethod,
       orderState: OrderState.Fulfilled,
       totalSum: totalSum,
-      giftCardIds: [],
-      consumerGoodsIds: [],
+      giftCardIds: giftCards ? giftCards.map(x => x.id) : [],
+      consumerGoodsIds: consumerGoods ? consumerGoods.map(x => x.id) : [],
       reservationIds: reservations ? reservations.map(x => x.id) : []
     }),
     successCallback: data => {
@@ -137,6 +167,93 @@ const Cart = () => {
 
                       <Text fontWeight={600} alignSelf={'flex-end'}>
                         {`${reservationsSum} €`}
+                      </Text>
+                    </>
+                  )}
+                </Stack>
+              </Flex>
+
+              <Divider marginTop={5} marginBottom={10} />
+            </Box>
+          )}
+
+          {consumerGoods && consumerGoods.length > 0 && (
+            <Box width='full'>
+              <FormLabel m={0}>Consumer goods</FormLabel>
+
+              {consumerGoods.map(x => (
+                <ConsumerGoodsItem
+                  key={x.id}
+                  consumerGoods={x}
+                  button={{
+                    name: '',
+                    icon: <CloseIcon />,
+                    variant: 'warning',
+                    onClick: () => deleteConsumerGoods(x.id)
+                  }}
+                ></ConsumerGoodsItem>
+              ))}
+
+              <Flex justifyContent='flex-end'>
+                <Stack spacing={0} marginTop={5}>
+                  <Text fontSize={'sm'} color={'tertiary'} alignSelf={'center'}>
+                    Subtotal:
+                  </Text>
+                  <Text
+                    fontWeight={600}
+                    alignSelf={'flex-end'}
+                  >{`${consumerGoods[0].price} €`}</Text>
+                  {consumerGoods.slice(1).map(subItem => (
+                    <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${subItem.price} €`}</Text>
+                  ))}
+                  {consumerGoods.length > 1 && (
+                    <>
+                      <Divider marginTop={5} marginBottom={10} borderColor='primary' />
+
+                      <Text fontWeight={600} alignSelf={'flex-end'}>
+                        {`${consumerGoodsSum} €`}
+                      </Text>
+                    </>
+                  )}
+                </Stack>
+              </Flex>
+
+              <Divider marginTop={5} marginBottom={10} />
+            </Box>
+          )}
+
+          {giftCards && giftCards.length > 0 && (
+            <Box width='full'>
+              <FormLabel m={0}>Consumer goods</FormLabel>
+
+              {giftCards.map(x => (
+                <GiftCardItem
+                  key={x.id}
+                  giftCard={x}
+                  button={{
+                    name: '',
+                    icon: <CloseIcon />,
+                    variant: 'warning',
+                    onClick: () => deleteGiftCard(x.id)
+                  }}
+                ></GiftCardItem>
+              ))}
+
+              <Flex justifyContent='flex-end'>
+                <Stack spacing={0} marginTop={5}>
+                  <Text fontSize={'sm'} color={'tertiary'} alignSelf={'center'}>
+                    Subtotal:
+                  </Text>
+                  <Text fontWeight={600} alignSelf={'flex-end'}>{`${giftCards[0].price} €`}</Text>
+                  {giftCards.slice(1).map(subItem => (
+                    <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${subItem.price} €`}</Text>
+                  ))}
+                  {giftCards.length > 1 && (
+                    <>
+                      <Divider marginTop={5} marginBottom={10} borderColor='primary' />
+
+                      <Text fontWeight={600} alignSelf={'flex-end'}>
+                        {`${giftCardsSum} €`}
                       </Text>
                     </>
                   )}

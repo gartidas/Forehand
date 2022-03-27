@@ -12,7 +12,8 @@ export const LoggedOutNavButtons: INabButtonProps[] = [
 
 export const CustomerNavButtons: INabButtonProps[] = [
   { label: 'Home', url: '/home' },
-  { label: 'Reservations', url: '/reservations' }
+  { label: 'Reservations', url: '/reservations' },
+  { label: 'Gift cards', url: '/gift-cards' }
 ]
 export const EmployeeNavButtons: INabButtonProps[] = [
   { label: 'Home', url: '/home' },

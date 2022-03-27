@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     [Route("api/gift-cards")]
     public class GiftCardsController : BaseController
     {
-        [Authorize(nameof(RoleEnum.Employee))]
+        [Authorize()]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetGiftCards.GiftCardDto>>> GetGiftCards(string search, CancellationToken cancellationToken)
          => await Mediator.Send(new GetGiftCards.Query() { Search = search }, cancellationToken);

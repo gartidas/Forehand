@@ -1,5 +1,5 @@
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
-import { Box, Flex, HStack, Stack } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, Stack } from '@chakra-ui/react'
 import { useState } from 'react'
 import { IApiError } from '../../../api/types'
 import api from '../../../api/httpClient'
@@ -14,6 +14,8 @@ import {
 import { combineValidators, minNumericValue, requiredValidator } from '../../../utils/validators'
 import { IConsumerGoods } from '../../../domainTypes'
 import { formatDateForInput } from '../../../utils'
+import { AiOutlineShoppingCart } from 'react-icons/ai'
+import { useOrders } from '../../../contextProviders/OrdersProvider'
 
 interface ConsumerGoodsDetailProps {
   onClose: () => void
@@ -44,6 +46,7 @@ const ConsumerGoodsDetail = ({
   isOpen,
   consumerGoods
 }: ConsumerGoodsDetailProps) => {
+  const { addConsumerGoods } = useOrders()
   const [isDisabled, setIsDisabled] = useState(true)
   const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
     url: consumerGoods ? `/consumer-goods/${consumerGoods.id}` : '/consumer-goods',
@@ -88,6 +91,18 @@ const ConsumerGoodsDetail = ({
         consumerGoods
           ? isDisabled
             ? [
+                {
+                  name: 'sell',
+                  icon: <Icon as={AiOutlineShoppingCart} />,
+                  variant: 'secondary',
+                  onClick: () => {
+                    addConsumerGoods(consumerGoods)
+                    successToast('Consumer goods added to cart.')
+                    refetch()
+                    onClose()
+                  },
+                  shake: true
+                },
                 {
                   name: 'edit',
                   icon: <EditIcon />,

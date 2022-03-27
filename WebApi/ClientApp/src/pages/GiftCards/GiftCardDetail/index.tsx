@@ -1,5 +1,5 @@
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
-import { Box, Flex, HStack, Stack } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, Stack } from '@chakra-ui/react'
 import { useState } from 'react'
 import { IApiError } from '../../../api/types'
 import api from '../../../api/httpClient'
@@ -12,7 +12,10 @@ import {
   successToast
 } from '../../../services/toastService'
 import { combineValidators, minNumericValue, requiredValidator } from '../../../utils/validators'
-import { IGiftCard } from '../../../domainTypes'
+import { IGiftCard, Role } from '../../../domainTypes'
+import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
+import { AiOutlineShoppingCart } from 'react-icons/ai'
+import { useOrders } from '../../../contextProviders/OrdersProvider'
 
 interface GiftCardDetailProps {
   onClose: () => void
@@ -36,6 +39,8 @@ const defaultValues: Partial<IFormValue> = {
 }
 
 const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailProps) => {
+  const { addGiftCard } = useOrders()
+  const { currentUser } = useAuthorizedUser()
   const [isDisabled, setIsDisabled] = useState(true)
   const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
     url: giftCard ? `/gift-cards/${giftCard.id}` : '/gift-cards',
@@ -59,6 +64,39 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
     }
   }
 
+  const disabledButtons =
+    currentUser.role !== Role.BasicUser
+      ? [
+          {
+            name: 'edit',
+            icon: <EditIcon />,
+            variant: 'secondary',
+            onClick: () => setIsDisabled(false),
+            shake: true
+          },
+          {
+            name: '',
+            icon: <DeleteIcon />,
+            variant: 'warning',
+            onClick: deleteGiftCard,
+            shake: true
+          }
+        ]
+      : [
+          {
+            name: 'sell',
+            icon: <Icon as={AiOutlineShoppingCart} />,
+            variant: 'secondary',
+            onClick: () => {
+              addGiftCard(giftCard!)
+              successToast('Gift card added to cart.')
+              refetch()
+              onClose()
+            },
+            shake: true
+          }
+        ]
+
   return (
     <FormModal
       isOpen={isOpen}
@@ -78,22 +116,7 @@ const GiftCardDetail = ({ onClose, refetch, isOpen, giftCard }: GiftCardDetailPr
       footerButtons={
         giftCard
           ? isDisabled
-            ? [
-                {
-                  name: 'edit',
-                  icon: <EditIcon />,
-                  variant: 'secondary',
-                  onClick: () => setIsDisabled(false),
-                  shake: true
-                },
-                {
-                  name: '',
-                  icon: <DeleteIcon />,
-                  variant: 'warning',
-                  onClick: deleteGiftCard,
-                  shake: true
-                }
-              ]
+            ? disabledButtons
             : [
                 {
                   name: 'submit',

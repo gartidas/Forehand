@@ -30,6 +30,8 @@ namespace WebApi.Features.GiftCards
             {
                 if (request.Search is null)
                     return await _db.GiftCards
+                    .Include(x => x.Order)
+                    .Where(x => x.Order == null)
                     .Select(x => new GiftCardDto
                     {
                         Id = x.Id,
@@ -42,6 +44,8 @@ namespace WebApi.Features.GiftCards
                     .ToListAsync(cancellationToken);
 
                 return await _db.GiftCards
+                    .Include(x => x.Order)
+                    .Where(x => x.Order == null)
                     .Where(x => (x.Name).Contains(request.Search) || (x.Code).Contains(request.Search))
                     .Select(x => new GiftCardDto
                     {
