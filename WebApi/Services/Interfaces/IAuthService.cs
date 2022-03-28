@@ -19,5 +19,7 @@ namespace WebApi.Services.Interfaces
         public Task<bool> IsEmailUnique(string email);
 
         public Task<User> GetUser(string userId);
+
+        public Task<Result> ChangePassword(string userId, string currentPassword, string newPassword, CancellationToken cancellationToken);
     }
 }

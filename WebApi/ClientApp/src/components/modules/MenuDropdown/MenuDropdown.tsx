@@ -63,7 +63,7 @@ const MenuDropdown = () => {
               <CartIcon />
             </Flex>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={() => navigate(`/settings/change-password`)}>
             <Flex width='full' justifyContent='center'>
               <Icon as={FiSettings} />
             </Flex>

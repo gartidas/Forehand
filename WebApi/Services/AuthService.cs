@@ -159,6 +159,20 @@ namespace WebApi.Services
             return (accessToken, refreshToken);
         }
 
+        public async Task<Result> ChangePassword(string userId, string currentPassword, string newPassword, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                return Result.Failure(ErrorCodes.InvalidEmailAddress);
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+                return Result.Failure(ErrorCodes.InvalidPassword);
+
+            return Result.Success();
+        }
+
         private string CreateAccessToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

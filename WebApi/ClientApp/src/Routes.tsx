@@ -18,6 +18,7 @@ import UpdateReservation from './pages/Reservations/UpdateReservation'
 import Cart from './pages/Cart'
 import TrainerReservations from './pages/TrainerReservations'
 import SubscriptionCards from './pages/SubscriptionCards'
+import Settings from './pages/Settings'
 
 const Routes = () => {
   return (
@@ -158,6 +159,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <SubscriptionCards />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/settings/change-password'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <Settings />
             </DefaultLayout>
           </ProtectedRoute>
         }

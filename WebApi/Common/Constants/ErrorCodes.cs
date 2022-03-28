@@ -7,6 +7,7 @@
         public const string RefreshTokenExpired = nameof(RefreshTokenExpired);
         public const string Required = nameof(Required);
         public const string InvalidEmailAddress = nameof(InvalidEmailAddress);
+        public const string InvalidPassword = nameof(InvalidPassword);
         public const string MinLength = nameof(MinLength);
         public const string MaxLength = nameof(MaxLength);
         public const string MustBeUnique = nameof(MustBeUnique);

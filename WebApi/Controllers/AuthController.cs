@@ -74,6 +74,14 @@ namespace WebApi.Controllers
         public async Task<ActionResult<GetMe.Response>> GetMe(CancellationToken cancellationToken)
            => await Mediator.Send(new GetMe.Query { CurrentUserId = CurrentUserService.UserId }, cancellationToken);
 
+        [HttpPost("change-password")]
+        public async Task<ActionResult> ChangePassword(ChangePassword.Command request, CancellationToken cancellationToken)
+        {
+            request.UserId = CurrentUserService.UserId;
+            await Mediator.Send(request, cancellationToken);
+            return NoContent();
+        }
+
         private CookieOptions GetRefreshTokenCookieOptions(TimeSpan? maxAge = null)
           => new CookieOptions
           {
