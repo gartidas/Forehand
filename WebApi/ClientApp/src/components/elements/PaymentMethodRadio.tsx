@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 
 type PaymentMethodRadioProps = UseRadioProps & {
   children?: ReactNode
+  isDisabled: boolean
 }
 
 const PaymentMethodRadio = (props: PaymentMethodRadioProps) => {
@@ -15,6 +16,7 @@ const PaymentMethodRadio = (props: PaymentMethodRadioProps) => {
     <Box as='label'>
       <input {...input} />
       <Box
+        pointerEvents={props.isDisabled ? 'none' : 'all'}
         {...checkbox}
         cursor='pointer'
         borderRadius='md'

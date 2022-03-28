@@ -29,6 +29,7 @@ namespace WebApi.Features.Orders
             {
                 var order = await _db.Orders.Include(x => x.GiftCards).Include(x => x.Customer).ThenInclude(x => x.IdentityUser)
                     .Include(x => x.ConsumerGoods).Include(x => x.Employee).ThenInclude(x => x.IdentityUser).Include(x => x.Reservations)
+                    .Include(x => x.SubscriptionCard)
                     .SingleOrNotFoundAsync(x => x.Id == request.OrderId);
                 return OrderDto.Map(order);
             }

@@ -41,7 +41,6 @@ import FetchError from '../../components/elements/FetchError'
 import FormAutoCompleteInput from '../../components/elements/FormAutoCompleteInput'
 import { AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete'
 import SubscriptionCardItem from './OrderItems/SubscriptionCardItem'
-import { useNavigate } from 'react-router'
 
 interface IFormValue {
   paymentMethod: PaymentMethod
@@ -64,7 +63,6 @@ const defaultValues: Partial<IFormValue> = {
 }
 
 const Cart = () => {
-  const navigate = useNavigate()
   const [usableGiftCard, setUsableGiftCard] = useState<IGiftCard>()
   const { currentUser } = useAuthorizedUser()
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.Cash)
@@ -199,7 +197,6 @@ const Cart = () => {
       }
       clearCart()
       successToast('Order created successfully.')
-      // navigate(`/orders/${data}`)
     },
     errorCallback: error => apiErrorToast({ data: error, status: 400 })
   })
@@ -477,6 +474,7 @@ const Cart = () => {
               {totalSum > 0 && (
                 <Flex {...getRootProps()} width='full' justifyContent='space-around' marginTop={20}>
                   <PaymentMethodRadio
+                    isDisabled={false}
                     key={PaymentMethod[PaymentMethod.Cash]}
                     {...getRadioProps({ value: PaymentMethod[PaymentMethod.Cash] })}
                   >
@@ -486,6 +484,7 @@ const Cart = () => {
                     </Flex>
                   </PaymentMethodRadio>
                   <PaymentMethodRadio
+                    isDisabled={false}
                     key={PaymentMethod[PaymentMethod.CreditCard]}
                     {...getRadioProps({ value: PaymentMethod[PaymentMethod.CreditCard] })}
                   >
@@ -495,6 +494,7 @@ const Cart = () => {
                     </Flex>
                   </PaymentMethodRadio>
                   <PaymentMethodRadio
+                    isDisabled={false}
                     key={PaymentMethod[PaymentMethod.DebitCard]}
                     {...getRadioProps({ value: PaymentMethod[PaymentMethod.DebitCard] })}
                   >

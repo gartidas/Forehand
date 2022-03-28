@@ -11,6 +11,7 @@ using WebApi.Features.Reservations;
 using WebApi.Persistence;
 using static WebApi.Features.ConsumerGoods.GetConsumerGoods;
 using static WebApi.Features.GiftCards.GetGiftCards;
+using static WebApi.Features.SubscriptionCards.GetSubscriptionCardForCustomer;
 using static WebApi.Features.Users.GetUser;
 
 namespace WebApi.Features.Orders
@@ -37,12 +38,14 @@ namespace WebApi.Features.Orders
                 if (request.Search is null)
                     return await _db.Orders.Include(x => x.GiftCards).Include(x => x.Customer).ThenInclude(x => x.IdentityUser)
                     .Include(x => x.ConsumerGoods).Include(x => x.Employee).ThenInclude(x => x.IdentityUser).Include(x => x.Reservations)
+                    .Include(x => x.SubscriptionCard)
                     .Select(x => OrderDto.Map(x))
                     .OrderBy(x => x.CreationDate)
                     .ToListAsync(cancellationToken);
 
                 return await _db.Orders.Include(x => x.GiftCards).Include(x => x.Customer).ThenInclude(x => x.IdentityUser)
                     .Include(x => x.ConsumerGoods).Include(x => x.Employee).ThenInclude(x => x.IdentityUser).Include(x => x.Reservations)
+                    .Include(x => x.SubscriptionCard)
                     .Where(x => (x.TrackingNumber.ToString()).Contains(request.Search))
                     .Select(x => OrderDto.Map(x))
                     .OrderBy(x => x.CreationDate)
@@ -64,7 +67,7 @@ namespace WebApi.Features.Orders
 
             public double TotalSum { get; set; }
 
-            //public SubscriptionCard SubscriptionCard { get; set; }
+            public SubscriptionCardDto SubscriptionCard { get; set; }
 
             public UserDto Customer { get; set; }
 
@@ -85,22 +88,22 @@ namespace WebApi.Features.Orders
                PaymentMethod = order.PaymentMethod,
                OrderState = order.OrderState,
                TotalSum = order.TotalSum,
-               Customer = new UserDto()
+               Customer = order.Customer is not null ? new UserDto()
                {
                    Id = order.Customer.IdentityUser.Id,
                    Email = order.Customer.IdentityUser.Email,
                    GivenName = order.Customer.IdentityUser.GivenName,
                    Surname = order.Customer.IdentityUser.Surname,
                    Role = order.Customer.IdentityUser.Role,
-               },
-               Employee = new UserDto()
+               } : null,
+               Employee = order.Employee is not null ? new UserDto()
                {
                    Id = order.Employee.IdentityUser.Id,
                    Email = order.Employee.IdentityUser.Email,
                    GivenName = order.Employee.IdentityUser.GivenName,
                    Surname = order.Employee.IdentityUser.Surname,
                    Role = order.Employee.IdentityUser.Role,
-               },
+               } : null,
                GiftCards = order.GiftCards.Select(x => new GiftCardDto()
                {
                    Id = x.Id,
@@ -118,7 +121,14 @@ namespace WebApi.Features.Orders
                    Name = x.Name,
                    Manufacturer = x.Manufacturer,
                }).ToList(),
-               Reservations = order.Reservations.Select(x => ReservationDto.Map(x)).ToList()
+               Reservations = order.Reservations.Select(x => ReservationDto.Map(x)).ToList(),
+               SubscriptionCard = order.SubscriptionCard is not null ? new SubscriptionCardDto
+               {
+                   Id = order.SubscriptionCard.Id,
+                   DueDate = order.SubscriptionCard.DueDate,
+                   Price = order.SubscriptionCard.Price,
+                   SubscriptionType = order.SubscriptionCard.SubscriptionType,
+               } : null
            };
         }
     }
