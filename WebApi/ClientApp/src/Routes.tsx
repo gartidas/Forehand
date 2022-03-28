@@ -19,6 +19,7 @@ import Cart from './pages/Cart'
 import TrainerReservations from './pages/TrainerReservations'
 import SubscriptionCards from './pages/SubscriptionCards'
 import Settings from './pages/Settings'
+import UpdateUser from './pages/Users/UpdateUser'
 
 const Routes = () => {
   return (
@@ -169,6 +170,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <Settings />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/users/:id/edit'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <UpdateUser />
             </DefaultLayout>
           </ProtectedRoute>
         }

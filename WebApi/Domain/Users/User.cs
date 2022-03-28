@@ -17,9 +17,9 @@ namespace WebApi.Domain
             Role = role;
         }
 
-        public string GivenName { get; private set; }
+        public string GivenName { get; set; }
 
-        public string Surname { get; private set; }
+        public string Surname { get; set; }
 
         public string RefreshToken { get; private set; }
 

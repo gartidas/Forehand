@@ -27,9 +27,9 @@ namespace WebApi.Domain
 
         public bool RegistrationConfirmed { get; private set; }
 
-        public string Bio { get; private set; }
+        public string Bio { get; set; }
 
-        public double ReservationPrice { get; private set; }
+        public double ReservationPrice { get; set; }
 
         public double Rating => _ratedBy.Count > 0 ? _ratedBy.Select(x => x.Rating).Average() : 0.0;
 

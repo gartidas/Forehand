@@ -46,5 +46,13 @@ namespace WebApi.Controllers
         [HttpGet("{id}/subscription-card")]
         public async Task<ActionResult<GetSubscriptionCardForCustomer.SubscriptionCardDto>> GetSubscriptionCardForCustomer([FromRoute] string id, CancellationToken cancellationToken)
        => await Mediator.Send(new GetSubscriptionCardForCustomer.Query() { CustomerId = id }, cancellationToken);
+
+        [HttpPost("{id}/edit")]
+        public async Task<ActionResult> UpdateUser(UpdateUser.Command request, CancellationToken cancellationToken)
+        {
+            request.UserId = CurrentUserService.UserId;
+            await Mediator.Send(request, cancellationToken);
+            return NoContent();
+        }
     }
 }

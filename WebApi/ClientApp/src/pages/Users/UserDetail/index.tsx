@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import api from '../../../api/httpClient'
 import { IApiError } from '../../../api/types'
 import { ISubscriptionCard, IUserExtended, Role } from '../../../domainTypes'
@@ -8,7 +8,7 @@ import { Avatar, Box, Center, Divider, Flex, Heading, Spinner, Stack, Text } fro
 import roleColors from '../../../styles/roleColors'
 import { NAVBAR_HEIGHT } from '../../../components/modules/Navbar/Navbar'
 import Rating from 'react-rating'
-import { StarIcon } from '@chakra-ui/icons'
+import { EditIcon, StarIcon } from '@chakra-ui/icons'
 import { apiErrorToast, successToast } from '../../../services/toastService'
 import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
 import SubscriptionCardBadge from '../../../components/elements/SubscriptionCardBadge'
@@ -16,6 +16,7 @@ import { fetchSubscriptionCard } from '../../../services/authService'
 import { useState } from 'react'
 
 const UserDetail = () => {
+  const navigate = useNavigate()
   const [subscriptionCard, setSubscriptionCard] = useState<ISubscriptionCard>()
   const { currentUser } = useAuthorizedUser()
   const { id } = useParams<{ id: string }>()
@@ -54,6 +55,17 @@ const UserDetail = () => {
         position='relative'
       >
         <Box h={'120px'} w={'full'} backgroundColor={roleColors[data.role]} />
+
+        {currentUser.id === data.id && (
+          <EditIcon
+            position='absolute'
+            top={4}
+            left={4}
+            cursor='pointer'
+            onClick={() => navigate(`/users/${currentUser.id}/edit`)}
+          />
+        )}
+
         <Flex justify={'center'} mt={-12}>
           <Avatar
             size={'xl'}
