@@ -42,7 +42,7 @@ namespace WebApi.Controllers
             return Ok();
         }
 
-        [Authorize(nameof(RoleEnum.BasicUser))]
+        [Authorize()]
         [HttpGet("{id}/subscription-card")]
         public async Task<ActionResult<GetSubscriptionCardForCustomer.SubscriptionCardDto>> GetSubscriptionCardForCustomer([FromRoute] string id, CancellationToken cancellationToken)
        => await Mediator.Send(new GetSubscriptionCardForCustomer.Query() { CustomerId = id }, cancellationToken);
