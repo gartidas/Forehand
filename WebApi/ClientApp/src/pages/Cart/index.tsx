@@ -18,7 +18,7 @@ import { NAVBAR_HEIGHT } from '../../components/modules/Navbar/Navbar'
 import { useOrders } from '../../contextProviders/OrdersProvider'
 import {
   IGiftCard,
-  IOrder,
+  ISubscriptionCard,
   OrderItemType,
   OrderState,
   PaymentMethod,
@@ -40,11 +40,14 @@ import { useQuery } from 'react-query'
 import FetchError from '../../components/elements/FetchError'
 import FormAutoCompleteInput from '../../components/elements/FormAutoCompleteInput'
 import { AutoCompleteItem, AutoCompleteList } from '@choc-ui/chakra-autocomplete'
+import SubscriptionCardItem from './OrderItems/SubscriptionCardItem'
+import { useNavigate } from 'react-router'
 
 interface IFormValue {
   paymentMethod: PaymentMethod
   orderState: OrderState
   totalSum: number
+  subscriptionCard: ISubscriptionCard
   giftCardIds: string[]
   consumerGoodsIds: string[]
   reservationIds: string[]
@@ -54,12 +57,14 @@ const defaultValues: Partial<IFormValue> = {
   paymentMethod: PaymentMethod.Unknown,
   orderState: OrderState.Unknown,
   totalSum: 0,
+  subscriptionCard: undefined,
   giftCardIds: [],
   consumerGoodsIds: [],
   reservationIds: []
 }
 
 const Cart = () => {
+  const navigate = useNavigate()
   const [usableGiftCard, setUsableGiftCard] = useState<IGiftCard>()
   const { currentUser } = useAuthorizedUser()
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.Cash)
@@ -68,8 +73,15 @@ const Cart = () => {
     defaultValue: PaymentMethod[paymentMethod],
     onChange: value => setPaymentMethod(PaymentMethod[value as keyof typeof PaymentMethod])
   })
-  const { reservations, consumerGoods, giftCards, orderItemsCount, removeOrderItem, clearCart } =
-    useOrders()
+  const {
+    reservations,
+    consumerGoods,
+    giftCards,
+    subscriptionCard,
+    orderItemsCount,
+    removeOrderItem,
+    clearCart
+  } = useOrders()
   const reservationsSum = useMemo(
     () =>
       reservations && reservations.length > 0
@@ -92,13 +104,42 @@ const Cart = () => {
     [giftCards]
   )
   const giftCardReduction = useMemo(
-    () => (usableGiftCard ? usableGiftCard.price : 0),
-    [usableGiftCard]
+    () =>
+      (consumerGoods === undefined || consumerGoods.length === 0) &&
+      subscriptionCard === null &&
+      currentUser.subscriptionCard === undefined &&
+      usableGiftCard
+        ? usableGiftCard.price
+        : 0,
+    [usableGiftCard, consumerGoods, subscriptionCard, currentUser]
   )
+
+  const subCardReduction =
+    (consumerGoods === undefined || consumerGoods.length === 0) &&
+    (giftCards === undefined || giftCards.length === 0) &&
+    subscriptionCard === null &&
+    usableGiftCard === undefined &&
+    currentUser.subscriptionCard !== undefined
+      ? 0
+      : 1
+
   const totalSum = useMemo(() => {
-    const total = reservationsSum + consumerGoodsSum + giftCardsSum - giftCardReduction
-    return total > 0 ? total : 0
-  }, [reservationsSum, consumerGoodsSum, giftCardsSum, giftCardReduction])
+    const total =
+      reservationsSum +
+      consumerGoodsSum +
+      giftCardsSum -
+      giftCardReduction +
+      (subscriptionCard ? subscriptionCard.price : 0)
+    const totalWithZero = total > 0 ? total : 0
+    return totalWithZero * subCardReduction
+  }, [
+    reservationsSum,
+    consumerGoodsSum,
+    giftCardsSum,
+    giftCardReduction,
+    subscriptionCard,
+    subCardReduction
+  ])
 
   const deleteReservation = async (reservationId: string) => {
     try {
@@ -120,6 +161,11 @@ const Cart = () => {
     successToast('Gift card removed.')
   }
 
+  const deleteSubscriptionCard = async (subscriptionCardId: string) => {
+    removeOrderItem(subscriptionCardId!, OrderItemType.SubscriptionCard)
+    successToast('Subscription card removed.')
+  }
+
   const { data, isLoading, error } = useQuery<IGiftCard[], IApiError>(
     ['cart', 'gift-cards', 'customer', currentUser.id],
     async () => (await api.get(`/gift-cards/customer/${currentUser.id}`)).data,
@@ -134,13 +180,14 @@ const Cart = () => {
     }
   }
 
-  const { submitting, onSubmit } = useSubmitForm<IFormValue, IOrder>({
+  const { submitting, onSubmit } = useSubmitForm<IFormValue, string>({
     url: '/orders',
     formatter: values => ({
       ...values,
       paymentMethod: paymentMethod,
       orderState: OrderState.Fulfilled,
       totalSum: totalSum,
+      subscriptionCard: subscriptionCard,
       giftCardIds: giftCards ? giftCards.map(x => x.id) : [],
       consumerGoodsIds: consumerGoods ? consumerGoods.map(x => x.id) : [],
       reservationIds: reservations ? reservations.map(x => x.id) : []
@@ -152,6 +199,7 @@ const Cart = () => {
       }
       clearCart()
       successToast('Order created successfully.')
+      // navigate(`/orders/${data}`)
     },
     errorCallback: error => apiErrorToast({ data: error, status: 400 })
   })
@@ -304,51 +352,101 @@ const Cart = () => {
             </Box>
           ) : (
             <>
-              {orderItemsCount > 0 && (consumerGoods === undefined || consumerGoods.length === 0) && (
-                <Box width='full'>
-                  {usableGiftCard ? (
-                    <>
-                      <FormLabel m={0}>Gift card</FormLabel>
-                      <GiftCardItem
-                        giftCard={usableGiftCard}
-                        button={{
-                          name: '',
-                          icon: <CloseIcon />,
-                          variant: 'warning',
-                          onClick: () => setUsableGiftCard(undefined)
-                        }}
-                      />
+              {orderItemsCount > 0 &&
+                (consumerGoods === undefined || consumerGoods.length === 0) &&
+                subscriptionCard === null &&
+                currentUser.subscriptionCard === undefined && (
+                  <Box width='full'>
+                    {usableGiftCard ? (
+                      <>
+                        <FormLabel m={0}>Gift card</FormLabel>
+                        <GiftCardItem
+                          giftCard={usableGiftCard}
+                          button={{
+                            name: '',
+                            icon: <CloseIcon />,
+                            variant: 'warning',
+                            onClick: () => setUsableGiftCard(undefined)
+                          }}
+                        />
 
-                      <Flex justifyContent='flex-end' marginTop={5}>
-                        <Stack spacing={0} align={'center'}>
-                          <Text fontSize={'sm'} color={'tertiary'}>
-                            Subtotal:
-                          </Text>
-                          <Text fontWeight={600}>{`- ${usableGiftCard.price} €`}</Text>
-                        </Stack>
-                      </Flex>
-                    </>
-                  ) : (
-                    <FormAutoCompleteInput name='giftCard' label='Gift card' width='full'>
-                      <AutoCompleteList>
-                        {data.map(x => (
-                          <AutoCompleteItem
-                            key={`option-${x.id}`}
-                            value={x.id}
-                            align='center'
-                            onClick={() => setUsableGiftCard(x)}
-                          >
-                            <GiftCardItem giftCard={x} />
-                          </AutoCompleteItem>
-                        ))}
-                      </AutoCompleteList>
-                    </FormAutoCompleteInput>
-                  )}
+                        <Flex justifyContent='flex-end' marginTop={5}>
+                          <Stack spacing={0} align={'center'}>
+                            <Text fontSize={'sm'} color={'tertiary'}>
+                              Subtotal:
+                            </Text>
+                            <Text fontWeight={600}>{`- ${usableGiftCard.price} €`}</Text>
+                          </Stack>
+                        </Flex>
+                      </>
+                    ) : (
+                      <FormAutoCompleteInput name='giftCard' label='Gift card' width='full'>
+                        <AutoCompleteList>
+                          {data.map(x => (
+                            <AutoCompleteItem
+                              key={`option-${x.id}`}
+                              value={x.id}
+                              align='center'
+                              onClick={() => setUsableGiftCard(x)}
+                            >
+                              <GiftCardItem giftCard={x} />
+                            </AutoCompleteItem>
+                          ))}
+                        </AutoCompleteList>
+                      </FormAutoCompleteInput>
+                    )}
 
-                  <Divider marginTop={5} marginBottom={10} />
-                </Box>
-              )}
+                    <Divider marginTop={5} marginBottom={10} />
+                  </Box>
+                )}
             </>
+          )}
+
+          {orderItemsCount > 0 &&
+            (consumerGoods === undefined || consumerGoods.length === 0) &&
+            (giftCards === undefined || giftCards.length === 0) &&
+            subscriptionCard === null &&
+            usableGiftCard === undefined &&
+            currentUser.subscriptionCard !== undefined && (
+              <Box width='full'>
+                <FormLabel m={0}>Subscription card</FormLabel>
+
+                <SubscriptionCardItem
+                  subscriptionCard={currentUser.subscriptionCard}
+                ></SubscriptionCardItem>
+
+                <Divider marginTop={5} marginBottom={10} />
+              </Box>
+            )}
+
+          {subscriptionCard && (
+            <Box width='full'>
+              <FormLabel m={0}>Subscription card</FormLabel>
+
+              <SubscriptionCardItem
+                subscriptionCard={subscriptionCard}
+                button={{
+                  name: '',
+                  icon: <CloseIcon />,
+                  variant: 'warning',
+                  onClick: () => deleteSubscriptionCard(subscriptionCard.id)
+                }}
+              ></SubscriptionCardItem>
+
+              <Flex justifyContent='flex-end'>
+                <Stack spacing={0} marginTop={5}>
+                  <Text fontSize={'sm'} color={'tertiary'} alignSelf={'center'}>
+                    Subtotal:
+                  </Text>
+                  <Text
+                    fontWeight={600}
+                    alignSelf={'flex-end'}
+                  >{`${subscriptionCard.price} €`}</Text>
+                </Stack>
+              </Flex>
+
+              <Divider marginTop={5} marginBottom={10} />
+            </Box>
           )}
 
           {orderItemsCount > 0 && (
@@ -376,37 +474,39 @@ const Cart = () => {
                 </Stack>
               </Stack>
 
-              <Flex {...getRootProps()} width='full' justifyContent='space-around' marginTop={20}>
-                <PaymentMethodRadio
-                  key={PaymentMethod[PaymentMethod.Cash]}
-                  {...getRadioProps({ value: PaymentMethod[PaymentMethod.Cash] })}
-                >
-                  <Flex alignItems='center'>
-                    <Icon as={BsCash} />
-                    <Text marginLeft={5}>Cash</Text>
-                  </Flex>
-                </PaymentMethodRadio>
-                <PaymentMethodRadio
-                  key={PaymentMethod[PaymentMethod.CreditCard]}
-                  {...getRadioProps({ value: PaymentMethod[PaymentMethod.CreditCard] })}
-                >
-                  <Flex alignItems='center'>
-                    <Icon as={BsCreditCard2Back} />
-                    <Text marginLeft={5}>Credit card</Text>
-                  </Flex>
-                </PaymentMethodRadio>
-                <PaymentMethodRadio
-                  key={PaymentMethod[PaymentMethod.DebitCard]}
-                  {...getRadioProps({ value: PaymentMethod[PaymentMethod.DebitCard] })}
-                >
-                  <Flex alignItems='center'>
-                    <Icon as={BsCreditCard2BackFill} />
-                    <Text marginLeft={5}>Debit card</Text>
-                  </Flex>
-                </PaymentMethodRadio>
-              </Flex>
+              {totalSum > 0 && (
+                <Flex {...getRootProps()} width='full' justifyContent='space-around' marginTop={20}>
+                  <PaymentMethodRadio
+                    key={PaymentMethod[PaymentMethod.Cash]}
+                    {...getRadioProps({ value: PaymentMethod[PaymentMethod.Cash] })}
+                  >
+                    <Flex alignItems='center'>
+                      <Icon as={BsCash} />
+                      <Text marginLeft={5}>Cash</Text>
+                    </Flex>
+                  </PaymentMethodRadio>
+                  <PaymentMethodRadio
+                    key={PaymentMethod[PaymentMethod.CreditCard]}
+                    {...getRadioProps({ value: PaymentMethod[PaymentMethod.CreditCard] })}
+                  >
+                    <Flex alignItems='center'>
+                      <Icon as={BsCreditCard2Back} />
+                      <Text marginLeft={5}>Credit card</Text>
+                    </Flex>
+                  </PaymentMethodRadio>
+                  <PaymentMethodRadio
+                    key={PaymentMethod[PaymentMethod.DebitCard]}
+                    {...getRadioProps({ value: PaymentMethod[PaymentMethod.DebitCard] })}
+                  >
+                    <Flex alignItems='center'>
+                      <Icon as={BsCreditCard2BackFill} />
+                      <Text marginLeft={5}>Debit card</Text>
+                    </Flex>
+                  </PaymentMethodRadio>
+                </Flex>
+              )}
 
-              <Flex width='full' justifyContent='flex-end' marginTop={20}>
+              <Flex width='full' justifyContent='flex-end' marginTop={20} marginBottom={10}>
                 <Button variant='secondary' type='submit' isLoading={submitting}>
                   <Flex alignItems='center'>
                     <CartIcon />

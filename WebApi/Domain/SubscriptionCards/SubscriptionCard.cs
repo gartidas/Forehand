@@ -5,16 +5,12 @@ namespace WebApi.Domain
     public class SubscriptionCard : Entity<string>
     {
         public SubscriptionCard(double price, DateTime dueDate,
-            SubscriptionType subscriptionType, Customer customer, Order order)
+            SubscriptionType subscriptionType)
         {
             Id = Guid.NewGuid().ToString();
             Price = price;
             DueDate = dueDate;
             SubscriptionType = subscriptionType;
-            Customer = customer;
-            CustomerId = customer.Id;
-            Order = order;
-            OrderId = order.Id;
         }
 
         private SubscriptionCard()

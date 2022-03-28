@@ -1,6 +1,6 @@
 import { createContext, FC, useCallback, useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { IUserExtended } from '../domainTypes'
+import { IUserExtended, Role } from '../domainTypes'
 import * as authService from '../services/authService'
 
 export const IS_SIGNED_IN_LOCAL_STORAGE_KEY = 'FOREHAND.is_signed_in'
@@ -47,7 +47,13 @@ const AuthProvider: FC = ({ children }) => {
 
     const user = await authService.fetchCurrentUser()
     if (user) {
-      setUser(user)
+      if (user.role === Role.BasicUser) {
+        const subscriptionCard = await authService.fetchSubscriptionCard(user.id)
+        const userWithSubscriptionCard: IUserExtended =
+          subscriptionCard !== undefined ? { subscriptionCard, ...user } : { ...user }
+        setUser(userWithSubscriptionCard)
+      } else setUser(user)
+
       localStorage.setItem(IS_SIGNED_IN_LOCAL_STORAGE_KEY, 'true')
     } else {
       localStorage.removeItem(IS_SIGNED_IN_LOCAL_STORAGE_KEY)

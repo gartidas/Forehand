@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Common.Constants;
+using WebApi.Features.SubscriptionCards;
 using WebApi.Features.Users;
 
 namespace WebApi.Controllers
@@ -40,5 +41,10 @@ namespace WebApi.Controllers
             await Mediator.Send(command, cancellationToken);
             return Ok();
         }
+
+        [Authorize(nameof(RoleEnum.BasicUser))]
+        [HttpGet("{id}/subscription-card")]
+        public async Task<ActionResult<GetSubscriptionCardForCustomer.SubscriptionCardDto>> GetSubscriptionCardForCustomer([FromRoute] string id, CancellationToken cancellationToken)
+       => await Mediator.Send(new GetSubscriptionCardForCustomer.Query() { CustomerId = id }, cancellationToken);
     }
 }

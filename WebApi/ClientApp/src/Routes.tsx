@@ -17,6 +17,7 @@ import ReservationDetail from './pages/Reservations/ReservationDetail'
 import UpdateReservation from './pages/Reservations/UpdateReservation'
 import Cart from './pages/Cart'
 import TrainerReservations from './pages/TrainerReservations'
+import SubscriptionCards from './pages/SubscriptionCards'
 
 const Routes = () => {
   return (
@@ -151,6 +152,17 @@ const Routes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path='/subscription-cards'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <SubscriptionCards />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='/' element={<LandingPage />} />

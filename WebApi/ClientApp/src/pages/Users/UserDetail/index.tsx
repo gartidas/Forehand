@@ -1,7 +1,7 @@
 import { useParams } from 'react-router'
 import api from '../../../api/httpClient'
 import { IApiError } from '../../../api/types'
-import { IUserExtended, Role } from '../../../domainTypes'
+import { ISubscriptionCard, IUserExtended, Role } from '../../../domainTypes'
 import { useQuery } from 'react-query'
 import FetchError from '../../../components/elements/FetchError'
 import { Avatar, Box, Center, Divider, Flex, Heading, Spinner, Stack, Text } from '@chakra-ui/react'
@@ -11,13 +11,18 @@ import Rating from 'react-rating'
 import { StarIcon } from '@chakra-ui/icons'
 import { apiErrorToast, successToast } from '../../../services/toastService'
 import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
+import SubscriptionCardBadge from '../../../components/elements/SubscriptionCardBadge'
+import { fetchSubscriptionCard } from '../../../services/authService'
+import { useState } from 'react'
 
 const UserDetail = () => {
+  const [subscriptionCard, setSubscriptionCard] = useState<ISubscriptionCard>()
   const { currentUser } = useAuthorizedUser()
   const { id } = useParams<{ id: string }>()
   const { data, isLoading, error, refetch } = useQuery<IUserExtended, IApiError>(
     ['users', id],
-    async () => (await api.get(`/users/${id}`)).data
+    async () => (await api.get(`/users/${id}`)).data,
+    { onSuccess: async result => setSubscriptionCard(await fetchSubscriptionCard(result.id)) }
   )
 
   if (error) return <FetchError error={error} />
@@ -39,7 +44,15 @@ const UserDetail = () => {
 
   return (
     <Center minHeight={`calc(100vh - ${NAVBAR_HEIGHT})`}>
-      <Box maxW={'350px'} w={'full'} bg={'bg'} rounded={'lg'} boxShadow={'lg'} overflow={'hidden'}>
+      <Box
+        maxW={'350px'}
+        w={'full'}
+        bg={'bg'}
+        rounded={'lg'}
+        boxShadow={'lg'}
+        overflow={'hidden'}
+        position='relative'
+      >
         <Box h={'120px'} w={'full'} backgroundColor={roleColors[data.role]} />
         <Flex justify={'center'} mt={-12}>
           <Avatar
@@ -49,6 +62,8 @@ const UserDetail = () => {
             border={`2px solid ${roleColors[data.role]}`}
           />
         </Flex>
+
+        <SubscriptionCardBadge subscriptionCard={subscriptionCard} />
 
         <Box p={6}>
           <Stack spacing={0} align={'center'} mb={5}>

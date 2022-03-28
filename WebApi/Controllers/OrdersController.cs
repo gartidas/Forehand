@@ -14,7 +14,7 @@ namespace WebApi.Controllers
     public class OrdersController : BaseController
     {
         [HttpPost]
-        public async Task<ActionResult> AddOrder(AddOrder.Command command, CancellationToken cancellationToken)
+        public async Task<ActionResult<string>> AddOrder(AddOrder.Command command, CancellationToken cancellationToken)
         {
             if (CurrentUserService.Role == RoleEnum.BasicUser)
                 command.CustomerId = CurrentUserService.UserId;
@@ -22,8 +22,7 @@ namespace WebApi.Controllers
             if (CurrentUserService.Role == RoleEnum.Employee)
                 command.EmployeeId = CurrentUserService.UserId;
 
-            await Mediator.Send(command, cancellationToken);
-            return Ok();
+            return Ok(await Mediator.Send(command, cancellationToken));
         }
 
         [Authorize(nameof(RoleEnum.Employee))]

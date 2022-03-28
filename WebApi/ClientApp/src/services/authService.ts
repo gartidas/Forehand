@@ -1,7 +1,7 @@
 import api, { setAuthHeader } from '../api/httpClient'
 import { IApiError } from '../api/types'
 import { AxiosInstance } from 'axios'
-import { IUserExtended } from '../domainTypes'
+import { ISubscriptionCard, IUserExtended } from '../domainTypes'
 
 export const logout = async () => {
   try {
@@ -20,7 +20,16 @@ export const fetchCurrentUser = async () => {
       await refreshToken()
     }
     const res = await api.get('/auth/me')
-    return res.data as IUserExtended
+    return res.data ? (res.data as IUserExtended) : undefined
+  } catch (err) {
+    return undefined
+  }
+}
+
+export const fetchSubscriptionCard = async (userId: string) => {
+  try {
+    const res = await api.get(`/users/${userId}/subscription-card`)
+    return res.data as ISubscriptionCard
   } catch (err) {
     return undefined
   }

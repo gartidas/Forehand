@@ -28,7 +28,14 @@ const MenuDropdown = () => {
       justify={{ base: 'flex-end', md: 'flex-start' }}
     >
       <Menu>
-        <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
+        <MenuButton
+          as={Button}
+          rounded={'full'}
+          variant={'link'}
+          cursor={'pointer'}
+          minW={0}
+          paddingRight={2}
+        >
           <Flex alignItems='center'>
             <Avatar
               size={'sm'}

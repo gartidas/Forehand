@@ -14,6 +14,7 @@ export interface IUserExtended extends IUser {
   numberOfRatings?: number
   reservationPrice?: number
   hasCurrentUserRatedUser?: boolean
+  subscriptionCard?: ISubscriptionCard
 }
 
 export interface IUser {
@@ -102,7 +103,8 @@ export enum OrderItemType {
   Unknown = 0,
   Reservation = 1,
   GiftCard = 2,
-  ConsumerGoods = 3
+  ConsumerGoods = 3,
+  SubscriptionCard = 4
 }
 
 export interface IOrder {
@@ -114,6 +116,7 @@ export interface IOrder {
   totalSum: number
   customer: IUser
   employee: IUser
+  subscriptionCard: ISubscriptionCard
   giftCards: IGiftCard[]
   consumerGoods: IConsumerGoods[]
   reservations: IReservation[]
@@ -131,4 +134,18 @@ export enum OrderState {
   NotFulfilled = 1,
   Fulfilled = 2,
   Refunded = 3
+}
+
+export interface ISubscriptionCard {
+  id: string
+  price: number
+  dueDate: string
+  subscriptionType: SubscriptionType
+}
+
+export enum SubscriptionType {
+  Unknown = 0,
+  Basic = 1,
+  Silver = 2,
+  Gold = 3
 }

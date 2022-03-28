@@ -11,12 +11,13 @@ using WebApi.Common.Constants;
 using WebApi.Common.Exceptions;
 using WebApi.Domain;
 using WebApi.Persistence;
+using static WebApi.Features.SubscriptionCards.GetSubscriptionCardForCustomer;
 
 namespace WebApi.Features.Orders
 {
     public class AddOrder
     {
-        public class Command : IRequest<Unit>
+        public class Command : IRequest<string>
         {
             [JsonIgnore]
             public string CustomerId { get; set; }
@@ -30,7 +31,7 @@ namespace WebApi.Features.Orders
 
             public double TotalSum { get; set; }
 
-            public string SubscriptionCardId { get; set; }
+            public SubscriptionCardDto SubscriptionCard { get; set; }
 
             public List<string> GiftCardIds { get; set; }
 
@@ -39,7 +40,7 @@ namespace WebApi.Features.Orders
             public List<string> ReservationIds { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Unit>
+        public class Handler : IRequestHandler<Command, string>
         {
             private readonly ForehandContext _db;
 
@@ -48,12 +49,12 @@ namespace WebApi.Features.Orders
                 _db = db;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<string> Handle(Command request, CancellationToken cancellationToken)
             {
                 if (request.CustomerId is null && request.EmployeeId is null)
                     throw new BadRequestException(ErrorCodes.InvalidId);
 
-                var customer = await _db.Customers.Include(x => x.IdentityUser).Include(x => x.Orders).SingleOrDefaultAsync(x => x.Id == request.CustomerId);
+                var customer = await _db.Customers.Include(x => x.IdentityUser).Include(x => x.Orders).Include(x => x.SubscriptionCard).SingleOrDefaultAsync(x => x.Id == request.CustomerId);
 
                 var employee = await _db.Employees.Include(x => x.IdentityUser).Include(x => x.Orders).SingleOrDefaultAsync(x => x.Id == request.EmployeeId);
 
@@ -61,7 +62,8 @@ namespace WebApi.Features.Orders
                     throw new BadRequestException(ErrorCodes.InvalidId);
 
                 var trackingNumber = _db.Orders.Any() ? _db.Orders.Select(x => x.TrackingNumber).Max(x => x) + 1 : 1;
-                var subscriptionCard = await _db.SubscriptionCards.Include(x => x.Order).SingleOrDefaultAsync(x => x.Id == request.SubscriptionCardId);
+
+                var subscriptionCard = request.SubscriptionCard is not null ? new SubscriptionCard(request.SubscriptionCard.Price, request.SubscriptionCard.DueDate, request.SubscriptionCard.SubscriptionType) : null;
 
                 var order = new Order(new DateTime(), trackingNumber, request.PaymentMethod, request.OrderState, request.TotalSum, subscriptionCard, customer, employee);
                 await _db.Orders.AddAsync(order, cancellationToken);
@@ -80,6 +82,12 @@ namespace WebApi.Features.Orders
                     {
                         reservation.ConfirmReservation(order);
                     }
+
+                    if (subscriptionCard is not null)
+                    {
+                        await _db.SubscriptionCards.AddAsync(subscriptionCard, cancellationToken);
+                        customer.AddSubscriptionCard(subscriptionCard);
+                    }
                 }
 
                 if (employee is not null)
@@ -93,7 +101,7 @@ namespace WebApi.Features.Orders
                 }
 
                 await _db.SaveChangesAsync(cancellationToken);
-                return Unit.Value;
+                return order.Id;
             }
         }
 
