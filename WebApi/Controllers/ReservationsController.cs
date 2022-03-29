@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 using WebApi.Common.Constants;
 using WebApi.Features.Reservations;
 using WebApi.Features.Reservations.ReservationItems;
+using WebApi.Features.Reservations.Statistics;
 using static WebApi.Features.Courts.GetCourts;
+using static WebApi.Features.Reservations.Statistics.GetCourtReservationStatistics;
+using static WebApi.Features.Reservations.Statistics.GetReservationDayPreferenceStatistics;
+using static WebApi.Features.Reservations.Statistics.GetReservationTimePreferenceStatistics;
+using static WebApi.Features.Reservations.Statistics.GetTrainerReservationStatistics;
 using static WebApi.Features.SportsGear.GetSportsGear;
 using static WebApi.Features.Users.GetUser;
 
@@ -19,7 +24,7 @@ namespace WebApi.Controllers
         [Authorize(nameof(RoleEnum.BasicUser))]
         [HttpGet("calendar")]
         public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservations(CancellationToken cancellationToken)
-          => await Mediator.Send(new GetReservations.Query(), cancellationToken);
+        => await Mediator.Send(new GetReservations.Query(), cancellationToken);
 
         [Authorize(nameof(RoleEnum.Trainer))]
         [HttpGet("calendar/trainers/{id}")]
@@ -29,7 +34,7 @@ namespace WebApi.Controllers
         [Authorize()]
         [HttpGet("{id}")]
         public async Task<ActionResult<ReservationDto>> GetReservation([FromRoute] string id, CancellationToken cancellationToken)
-           => await Mediator.Send(new GetReservation.Query() { ReservationId = id }, cancellationToken);
+        => await Mediator.Send(new GetReservation.Query() { ReservationId = id }, cancellationToken);
 
         [Authorize(nameof(RoleEnum.BasicUser))]
         [HttpPost]
@@ -59,7 +64,7 @@ namespace WebApi.Controllers
         [Authorize(nameof(RoleEnum.BasicUser))]
         [HttpPost("items/courts")]
         public async Task<ActionResult<IEnumerable<CourtDto>>> GetCourtsWithoutReservation(GetCourtsWithoutReservation.Query query, CancellationToken cancellationToken)
-         => await Mediator.Send(query, cancellationToken);
+        => await Mediator.Send(query, cancellationToken);
 
         [Authorize(nameof(RoleEnum.BasicUser))]
         [HttpPost("items/trainers")]
@@ -70,5 +75,25 @@ namespace WebApi.Controllers
         [HttpPost("items/sportsGear")]
         public async Task<ActionResult<IEnumerable<SportsGearDto>>> GetSportsGearWithoutReservation(GetSportsGearWithoutReservation.Query query, CancellationToken cancellationToken)
         => await Mediator.Send(query, cancellationToken);
+
+        [Authorize()]
+        [HttpGet("statistics/courts")]
+        public async Task<ActionResult<IEnumerable<CourtStatisticsDto>>> GetCourtStatistics(CancellationToken cancellationToken)
+        => await Mediator.Send(new GetCourtReservationStatistics.Query(), cancellationToken);
+
+        [Authorize()]
+        [HttpGet("statistics/trainers")]
+        public async Task<ActionResult<IEnumerable<TrainerStatisticsDto>>> GetTrainerStatistics(CancellationToken cancellationToken)
+        => await Mediator.Send(new GetTrainerReservationStatistics.Query(), cancellationToken);
+
+        [Authorize()]
+        [HttpGet("statistics/days-of-week")]
+        public async Task<ActionResult<List<DayOfWeekStatisticsDto>>> GetDaysOfWeekStatistics(CancellationToken cancellationToken)
+        => await Mediator.Send(new GetReservationDayPreferenceStatistics.Query(), cancellationToken);
+
+        [Authorize()]
+        [HttpGet("statistics/hours-of-day")]
+        public async Task<ActionResult<List<HourOfDayStatisticsDto>>> GetHoursOfDayStatistics(CancellationToken cancellationToken)
+        => await Mediator.Send(new GetReservationTimePreferenceStatistics.Query(), cancellationToken);
     }
 }

@@ -20,6 +20,7 @@ import TrainerReservations from './pages/TrainerReservations'
 import SubscriptionCards from './pages/SubscriptionCards'
 import Settings from './pages/Settings'
 import UpdateUser from './pages/Users/UpdateUser'
+import Statistics from './pages/Statistics'
 
 const Routes = () => {
   return (
@@ -180,6 +181,16 @@ const Routes = () => {
           <ProtectedRoute>
             <DefaultLayout>
               <UpdateUser />
+            </DefaultLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/statistics'
+        element={
+          <ProtectedRoute>
+            <DefaultLayout>
+              <Statistics />
             </DefaultLayout>
           </ProtectedRoute>
         }

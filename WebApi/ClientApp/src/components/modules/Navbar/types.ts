@@ -21,11 +21,13 @@ export const EmployeeNavButtons: INabButtonProps[] = [
   { label: 'Courts', url: '/courts' },
   { label: 'Sports gear', url: '/sports-gear' },
   { label: 'Gift cards', url: '/gift-cards' },
-  { label: 'Consumer goods', url: '/consumer-goods' }
+  { label: 'Consumer goods', url: '/consumer-goods' },
+  { label: 'Statistics', url: '/statistics' }
 ]
 export const TrainerNavButtons: INabButtonProps[] = [
   { label: 'Home', url: '/home' },
-  { label: 'Reservations', url: '/reservations/trainer' }
+  { label: 'Reservations', url: '/reservations/trainer' },
+  { label: 'Statistics', url: '/statistics' }
 ]
 export const AdminNavButtons: INabButtonProps[] = [
   { label: 'Home', url: '/home' },
@@ -33,7 +35,8 @@ export const AdminNavButtons: INabButtonProps[] = [
   { label: 'Courts', url: '/courts' },
   { label: 'Sports gear', url: '/sports-gear' },
   { label: 'Gift cards', url: '/gift-cards' },
-  { label: 'Consumer goods', url: '/consumer-goods' }
+  { label: 'Consumer goods', url: '/consumer-goods' },
+  { label: 'Statistics', url: '/statistics' }
 ]
 export const NoneNavButtons: INabButtonProps[] = []
 
