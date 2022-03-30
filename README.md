@@ -1,7 +1,7 @@
 # Forehand
 
 ## Deployed website
-
+https://forehand.azurewebsites.net/
 
 ### Tech stack:
 
