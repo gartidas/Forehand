@@ -2,26 +2,26 @@
 {
     public class ErrorCodes
     {
-        public const string NotSupported = nameof(NotSupported);
-        public const string InvalidRefreshToken = nameof(InvalidRefreshToken);
-        public const string RefreshTokenExpired = nameof(RefreshTokenExpired);
-        public const string Required = nameof(Required);
-        public const string InvalidEmailAddress = nameof(InvalidEmailAddress);
-        public const string InvalidPassword = nameof(InvalidPassword);
-        public const string MinLength = nameof(MinLength);
-        public const string MaxLength = nameof(MaxLength);
-        public const string MustBeUnique = nameof(MustBeUnique);
-        public const string MustNotBeEmpty = nameof(MustNotBeEmpty);
-        public const string InvalidLoginCredentials = nameof(InvalidLoginCredentials);
-        public const string RegistrationNotConfirmed = nameof(RegistrationNotConfirmed);
-        public const string InvalidId = nameof(InvalidId);
-        public const string AlreadyExists = nameof(AlreadyExists);
-        public const string DoesNotExist = nameof(DoesNotExist);
-        public const string MinimalValue = nameof(MinimalValue);
-        public const string MaximalValue = nameof(MaximalValue);
-        public const string MustBeInThePast = nameof(MustBeInThePast);
-        public const string MustBeInTheFuture = nameof(MustBeInTheFuture);
-        public const string MustBeAfterStartDate = nameof(MustBeAfterStartDate);
-        public const string ReservationForThisDateNotValid = nameof(ReservationForThisDateNotValid);
+        public const string NotSupported = "Not supported";
+        public const string InvalidRefreshToken = "Invalid refresh token";
+        public const string RefreshTokenExpired = "Refresh token expired";
+        public const string Required = "Required";
+        public const string InvalidEmailAddress = "Invalid email address";
+        public const string InvalidPassword = "Invalid password";
+        public const string MinLength = "Min length";
+        public const string MaxLength = "Max length";
+        public const string MustBeUnique = "Must be unique";
+        public const string MustNotBeEmpty = "Must not be empty";
+        public const string InvalidLoginCredentials = "Invalid login credentials";
+        public const string RegistrationNotConfirmed = "Registration not confirmed";
+        public const string InvalidId = "Invalid ID";
+        public const string AlreadyExists = "Already exists";
+        public const string DoesNotExist = "Does not exist";
+        public const string MinimalValue = "Minimal value";
+        public const string MaximalValue = "Maximal value";
+        public const string MustBeInThePast = "Must be in the past";
+        public const string MustBeInTheFuture = "Must be in the future";
+        public const string MustBeAfterStartDate = "Must be after start date";
+        public const string ReservationForThisDateNotValid = "Reservation for this date not valid";
     }
 }
