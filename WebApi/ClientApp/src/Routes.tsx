@@ -21,6 +21,7 @@ import SubscriptionCards from './pages/SubscriptionCards'
 import Settings from './pages/Settings'
 import UpdateUser from './pages/Users/UpdateUser'
 import Statistics from './pages/Statistics'
+import About from './pages/About'
 
 const Routes = () => {
   return (
@@ -196,6 +197,7 @@ const Routes = () => {
         }
       />
 
+      <Route path='/about' element={<About />} />
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='/' element={<LandingPage />} />
