@@ -14,7 +14,7 @@ const Burger = ({ isOpen, onClose, onOpen }: IBurgerProps) => {
       size={'md'}
       icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
       aria-label={'Open Menu'}
-      display={{ md: 'none' }}
+      display={{ lg: 'none' }}
       onClick={isOpen ? onClose : onOpen}
     />
   )

@@ -41,7 +41,10 @@ const ConsumerGoodsItem = ({ consumerGoods, onClick, button, ...rest }: Reservat
         <Text fontSize={'sm'} color={'tertiary'}>
           Product
         </Text>
-        <Text fontWeight={600}>{`${consumerGoods.name} by ${consumerGoods.manufacturer}`}</Text>
+        <Text
+          fontWeight={600}
+          wordBreak='break-word'
+        >{`${consumerGoods.name} by ${consumerGoods.manufacturer}`}</Text>
       </Stack>
       <Stack spacing={0} align={'center'}>
         <Text fontSize={'sm'} color={'tertiary'}>

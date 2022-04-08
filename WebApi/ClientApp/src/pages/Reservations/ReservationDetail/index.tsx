@@ -185,7 +185,7 @@ const ReservationDetail = () => {
               <FormLabel m={0}>Sports gear</FormLabel>
 
               {data.sportsGear.map(sportsGearItem => (
-                <SportsGearItem sportsGear={sportsGearItem} />
+                <SportsGearItem key={sportsGearItem.id} sportsGear={sportsGearItem} />
               ))}
 
               <Flex justifyContent='flex-end'>
@@ -197,7 +197,7 @@ const ReservationDetail = () => {
                     data.sportsGear[0].reservationPrice
                   } x ${hours}= ${data.sportsGear[0].reservationPrice! * hours} €`}</Text>
                   {data.sportsGear.slice(1).map(subItem => (
-                    <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${
+                    <Text key={subItem.id} fontWeight={600} alignSelf={'flex-end'}>{`+ ${
                       subItem.reservationPrice
                     } x ${hours}= ${subItem.reservationPrice! * hours} €`}</Text>
                   ))}

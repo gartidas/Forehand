@@ -24,8 +24,8 @@ const MenuDropdown = () => {
   return (
     <Flex
       alignItems={'center'}
-      flex={{ base: 1, md: 0 }}
-      justify={{ base: 'flex-end', md: 'flex-start' }}
+      flex={{ base: 1, lg: 0 }}
+      justify={{ base: 'flex-end', lg: 'flex-start' }}
     >
       <Menu>
         <MenuButton

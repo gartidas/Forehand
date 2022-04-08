@@ -14,7 +14,7 @@ const ChartLabel = (entry: any) => {
         textAnchor={x > entry.cx ? 'start' : 'end'}
         dominantBaseline='central'
       >
-        {`${entry.name} (${entry.value} reservation${entry.value !== 1 ? 's' : ''})`}
+        {`${entry.name} (${entry.value})`}
       </text>
     )
 }

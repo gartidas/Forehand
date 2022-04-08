@@ -26,7 +26,7 @@ const Navbar = () => {
             variant='dashed'
             borderColor='primary'
             height={10}
-            display={{ base: 'none', md: 'block' }}
+            display={{ base: 'none', xl: 'block' }}
           />
           <NavButtons
             buttons={isLoggedIn ? LoggedInNavButtons[auth.currentUser.role] : LoggedOutNavButtons}
@@ -38,8 +38,8 @@ const Navbar = () => {
           <MenuDropdown />
         ) : (
           <Stack
-            flex={{ base: 1, md: 0 }}
-            justify={{ base: 'flex-end', md: 'flex-start' }}
+            flex={{ base: 1, lg: 0 }}
+            justify={{ base: 'flex-end', lg: 'flex-start' }}
             direction='row'
             spacing={6}
           >
@@ -55,7 +55,7 @@ const Navbar = () => {
       </Flex>
 
       {isOpen ? (
-        <Box pb={4} display={{ md: 'none' }}>
+        <Box pb={4} display={{ lg: 'none' }}>
           <NavButtons
             buttons={isLoggedIn ? LoggedInNavButtons[auth.currentUser.role] : LoggedOutNavButtons}
             isMobileNavbar={true}

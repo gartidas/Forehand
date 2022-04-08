@@ -1,7 +1,7 @@
 import { createContext, FC, useCallback, useContext, useEffect } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 import { IApiError } from '../api/types'
-import { IReservation } from '../domainTypes'
+import { IReservation, Role } from '../domainTypes'
 import useHub from '../utils/hooks/useHub'
 import api from '../api/httpClient'
 import { useAuth } from './AuthProvider'
@@ -28,7 +28,7 @@ const ReservationsProvider: FC = ({ children }) => {
     {
       staleTime: Number.POSITIVE_INFINITY,
       cacheTime: Number.POSITIVE_INFINITY,
-      enabled: auth.isLoggedIn,
+      enabled: auth.isLoggedIn && auth.currentUser.role === Role.BasicUser,
       keepPreviousData: true
     }
   )

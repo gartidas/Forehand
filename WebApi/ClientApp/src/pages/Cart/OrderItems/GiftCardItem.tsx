@@ -43,6 +43,7 @@ const GiftCardItem = ({ giftCard, onClick, button, ...rest }: ReservationItemPro
         </Text>
         <Text
           fontWeight={600}
+          wordBreak='break-word'
         >{`${giftCard.name} (${giftCard.code}) of value ${giftCard.value} €`}</Text>
       </Stack>
       <Stack spacing={0} align={'center'}>

@@ -22,6 +22,7 @@ const Statistics = () => {
         isFitted
         overflowY='auto'
         height={isDesktop ? 'auto' : '100%'}
+        isLazy
       >
         <TabList
           position='sticky'

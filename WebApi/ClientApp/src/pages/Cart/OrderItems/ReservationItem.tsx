@@ -42,10 +42,12 @@ const ReservationItem = ({ reservation, onClick, button, ...rest }: ReservationI
         <Text fontSize={'sm'} color={'tertiary'}>
           Date
         </Text>
-        <Text fontWeight={600}>{`${formatDateForForm(reservation.startDate)} (${toFormattedDate(
-          reservation.startDate,
+        <Text fontWeight={600} wordBreak='break-word'>{`${formatDateForForm(
+          reservation.startDate
+        )} (${toFormattedDate(reservation.startDate, 'HH:mm')} - ${toFormattedDate(
+          reservation.endDate,
           'HH:mm'
-        )} - ${toFormattedDate(reservation.endDate, 'HH:mm')})`}</Text>
+        )})`}</Text>
       </Stack>
       <Stack spacing={0} align={'center'}>
         <Text fontSize={'sm'} color={'tertiary'}>

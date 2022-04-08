@@ -23,7 +23,11 @@ const UserDetail = () => {
   const { data, isLoading, error, refetch } = useQuery<IUserExtended, IApiError>(
     ['users', id],
     async () => (await api.get(`/users/${id}`)).data,
-    { onSuccess: async result => setSubscriptionCard(await fetchSubscriptionCard(result.id)) }
+    {
+      onSuccess: async result =>
+        result.role === Role.BasicUser &&
+        setSubscriptionCard(await fetchSubscriptionCard(result.id))
+    }
   )
 
   if (error) return <FetchError error={error} />

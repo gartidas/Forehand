@@ -201,8 +201,9 @@ const Cart = () => {
     errorCallback: error => apiErrorToast({ data: error, status: 400 })
   })
 
-  if (error) return <FetchError error={error} />
-  if (isLoading || !data) return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
+  if (currentUser.role === Role.BasicUser && error) return <FetchError error={error} />
+  if (currentUser.role === Role.BasicUser && (isLoading || !data))
+    return <Spinner thickness='4px' color='primary' size='xl' mt='30px' />
 
   return (
     <Stack
@@ -244,7 +245,11 @@ const Cart = () => {
                     alignSelf={'flex-end'}
                   >{`${reservations[0].price} €`}</Text>
                   {reservations.slice(1).map(subItem => (
-                    <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${subItem.price} €`}</Text>
+                    <Text
+                      key={subItem.id}
+                      fontWeight={600}
+                      alignSelf={'flex-end'}
+                    >{`+ ${subItem.price} €`}</Text>
                   ))}
                   {reservations.length > 1 && (
                     <>
@@ -289,7 +294,11 @@ const Cart = () => {
                     alignSelf={'flex-end'}
                   >{`${consumerGoods[0].price} €`}</Text>
                   {consumerGoods.slice(1).map(subItem => (
-                    <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${subItem.price} €`}</Text>
+                    <Text
+                      key={subItem.id}
+                      fontWeight={600}
+                      alignSelf={'flex-end'}
+                    >{`+ ${subItem.price} €`}</Text>
                   ))}
                   {consumerGoods.length > 1 && (
                     <>
@@ -307,7 +316,7 @@ const Cart = () => {
             </Box>
           )}
 
-          {giftCards && giftCards.length > 0 ? (
+          {currentUser.role === Role.BasicUser && giftCards && giftCards.length > 0 ? (
             <Box width='full'>
               <FormLabel m={0}>Gift cards</FormLabel>
 
@@ -331,7 +340,11 @@ const Cart = () => {
                   </Text>
                   <Text fontWeight={600} alignSelf={'flex-end'}>{`${giftCards[0].price} €`}</Text>
                   {giftCards.slice(1).map(subItem => (
-                    <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${subItem.price} €`}</Text>
+                    <Text
+                      key={subItem.id}
+                      fontWeight={600}
+                      alignSelf={'flex-end'}
+                    >{`+ ${subItem.price} €`}</Text>
                   ))}
                   {giftCards.length > 1 && (
                     <>
@@ -379,7 +392,7 @@ const Cart = () => {
                     ) : (
                       <FormAutoCompleteInput name='giftCard' label='Gift card' width='full'>
                         <AutoCompleteList>
-                          {data.map(x => (
+                          {data!.map(x => (
                             <AutoCompleteItem
                               key={`option-${x.id}`}
                               value={x.id}
@@ -478,9 +491,11 @@ const Cart = () => {
                     key={PaymentMethod[PaymentMethod.Cash]}
                     {...getRadioProps({ value: PaymentMethod[PaymentMethod.Cash] })}
                   >
-                    <Flex alignItems='center'>
+                    <Flex alignItems='center' justifyContent='center' height='100%'>
                       <Icon as={BsCash} />
-                      <Text marginLeft={5}>Cash</Text>
+                      <Text marginLeft={5} fontSize={{ base: 15, md: 20 }}>
+                        Cash
+                      </Text>
                     </Flex>
                   </PaymentMethodRadio>
                   <PaymentMethodRadio
@@ -488,9 +503,11 @@ const Cart = () => {
                     key={PaymentMethod[PaymentMethod.CreditCard]}
                     {...getRadioProps({ value: PaymentMethod[PaymentMethod.CreditCard] })}
                   >
-                    <Flex alignItems='center'>
+                    <Flex alignItems='center' justifyContent='center' height='100%'>
                       <Icon as={BsCreditCard2Back} />
-                      <Text marginLeft={5}>Credit card</Text>
+                      <Text marginLeft={5} fontSize={{ base: 15, md: 20 }}>
+                        Credit card
+                      </Text>
                     </Flex>
                   </PaymentMethodRadio>
                   <PaymentMethodRadio
@@ -498,9 +515,11 @@ const Cart = () => {
                     key={PaymentMethod[PaymentMethod.DebitCard]}
                     {...getRadioProps({ value: PaymentMethod[PaymentMethod.DebitCard] })}
                   >
-                    <Flex alignItems='center'>
+                    <Flex alignItems='center' justifyContent='center' height='100%'>
                       <Icon as={BsCreditCard2BackFill} />
-                      <Text marginLeft={5}>Debit card</Text>
+                      <Text marginLeft={5} fontSize={{ base: 15, md: 20 }}>
+                        Debit card
+                      </Text>
                     </Flex>
                   </PaymentMethodRadio>
                 </Flex>

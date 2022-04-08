@@ -44,7 +44,7 @@ const SubscriptionTypeItem = ({ type, price, perks, button }: SubscriptionTypeIt
       <VStack bg={subscriptionTypeColors[type]} py={4} borderBottomRadius={'xl'}>
         <List spacing={3} textAlign='start' px={12}>
           {perks.map(x => (
-            <ListItem>
+            <ListItem key={x}>
               <ListIcon as={FaCheckCircle} color='green.500' />
               {x}
             </ListItem>

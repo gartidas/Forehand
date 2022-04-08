@@ -321,6 +321,7 @@ const CreateReservation = () => {
               <>
                 {sportsGear.map(sportsGearItem => (
                   <SportsGearItem
+                    key={sportsGearItem.id}
                     sportsGear={sportsGearItem}
                     button={{
                       name: '',
@@ -343,7 +344,7 @@ const CreateReservation = () => {
                       sportsGear[0].reservationPrice
                     } x ${hours}= ${sportsGear[0].reservationPrice! * hours} €`}</Text>
                     {sportsGear.slice(1).map(subItem => (
-                      <Text fontWeight={600} alignSelf={'flex-end'}>{`+ ${
+                      <Text key={subItem.id} fontWeight={600} alignSelf={'flex-end'}>{`+ ${
                         subItem.reservationPrice
                       } x ${hours}= ${subItem.reservationPrice! * hours} €`}</Text>
                     ))}

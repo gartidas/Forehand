@@ -17,7 +17,13 @@ const ReservationItem = ({ event }: EventContentArg) => {
     return (
       <>
         <Stack align='center'>
-          <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'} color={'primary'}>
+          <Heading
+            fontSize={'sm'}
+            fontWeight={500}
+            fontFamily={'body'}
+            color={'primary'}
+            wordBreak='break-word'
+          >
             {`${toFormattedDate(start!, 'HH:mm')} - ${toFormattedDate(end!, 'HH:mm')}`}
           </Heading>
         </Stack>
@@ -29,7 +35,13 @@ const ReservationItem = ({ event }: EventContentArg) => {
               src={`https://avatars.dicebear.com/api/adventurer-neutral/${currentUser.id}.svg`}
               border={`2px solid ${roleColors[Role.BasicUser]}`}
             />
-            <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'} color={'primary'}>
+            <Heading
+              fontSize={'sm'}
+              fontWeight={500}
+              fontFamily={'body'}
+              color={'primary'}
+              wordBreak='break-word'
+            >
               {currentUser.email}
             </Heading>
           </Stack>
@@ -40,7 +52,13 @@ const ReservationItem = ({ event }: EventContentArg) => {
   return (
     <>
       <Stack align='center'>
-        <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'} color={'primary'}>
+        <Heading
+          fontSize={'sm'}
+          fontWeight={500}
+          fontFamily={'body'}
+          color={'primary'}
+          wordBreak='break-word'
+        >
           {`${toFormattedDate(start!, 'HH:mm')} - ${toFormattedDate(end!, 'HH:mm')}`}
         </Heading>
       </Stack>
@@ -59,7 +77,13 @@ const ReservationItem = ({ event }: EventContentArg) => {
 
       {hours > 1 && (
         <Stack align='center'>
-          <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'} color={'primary'}>
+          <Heading
+            fontSize={'sm'}
+            fontWeight={500}
+            fontFamily={'body'}
+            color={'primary'}
+            wordBreak='break-word'
+          >
             {title}
           </Heading>
         </Stack>
@@ -70,7 +94,9 @@ const ReservationItem = ({ event }: EventContentArg) => {
           <Text fontWeight={600} color={'tertiary'}>
             Court
           </Text>
-          <Text color={'tertiary'}>{extendedProps!.court}</Text>
+          <Text color={'tertiary'} wordBreak='break-word'>
+            {extendedProps!.court}
+          </Text>
         </Stack>
       )}
 
@@ -79,7 +105,9 @@ const ReservationItem = ({ event }: EventContentArg) => {
           <Text fontWeight={600} color={'tertiary'}>
             Trainer
           </Text>
-          <Text color={'tertiary'}>{extendedProps!.trainer}</Text>
+          <Text color={'tertiary'} wordBreak='break-word'>
+            {extendedProps!.trainer}
+          </Text>
         </Stack>
       )}
     </>

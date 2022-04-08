@@ -14,7 +14,10 @@ interface ITrainerStatistics {
 }
 
 const Trainers = () => {
-  const width = useBreakpointValue({ base: 420, md: 700 })
+  const width = useBreakpointValue({ base: 300, md: 600, lg: 1000 })
+  const height = useBreakpointValue({ base: 420, lg: 500 })
+  const radius = useBreakpointValue({ base: 90, md: 140, lg: 200 })
+
   const { data, isLoading, error } = useQuery<ITrainerStatistics[], IApiError>(
     ['reservations', 'statistics', 'trainers'],
     async () => (await api.get(`/reservations/statistics/trainers`)).data
@@ -30,13 +33,13 @@ const Trainers = () => {
 
   return (
     <Stack width='full' height='full' alignItems='center' overflow='auto'>
-      <PieChart width={width} height={400}>
+      <PieChart width={width} height={height}>
         <Pie
           data={formattedData}
           dataKey='value'
           cx='50%'
           cy='50%'
-          outerRadius={90}
+          outerRadius={radius}
           fill='#68D391'
           label={ChartLabel}
           labelLine={false}

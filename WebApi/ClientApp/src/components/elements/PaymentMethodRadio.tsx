@@ -30,6 +30,7 @@ const PaymentMethodRadio = (props: PaymentMethodRadioProps) => {
         }}
         px={5}
         py={3}
+        height='100%'
       >
         {props.children}
       </Box>

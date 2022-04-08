@@ -12,12 +12,12 @@ export const Logo = () => {
   return (
     <Link to={isLoggedIn ? '/home' : '/'}>
       <Flex alignItems={'center'}>
-        <Icon display={{ base: 'none', md: 'flex' }} />
+        <Icon display={{ base: 'none', lg: 'flex' }} />
         <Text
           marginLeft={2}
-          textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+          textAlign={useBreakpointValue({ base: 'center', lg: 'left' })}
           fontFamily='Shadows Into Light'
-          fontSize={{ base: '2xl', md: '3xl' }}
+          fontSize={{ base: '2xl', lg: '3xl' }}
           color={'primary'}
         >
           Forehand

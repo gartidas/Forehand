@@ -44,7 +44,7 @@ const SubscriptionCardItem = ({
         cursor={onClick ? 'pointer' : 'default'}
         onClick={onClick}
       >
-        <Text fontSize={'sm'} color={'tertiary'}>
+        <Text fontSize={'sm'} color={'tertiary'} wordBreak='break-word'>
           Info
         </Text>
         <Text fontWeight={600}>{`${

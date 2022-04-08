@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import { IApiError } from '../../../api/types'
 import api from '../../../api/httpClient'
 import FetchError from '../../../components/elements/FetchError'
-import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface IDayStatistics {
   hourOfDay: number
@@ -11,7 +11,8 @@ interface IDayStatistics {
 }
 
 const TimePreference = () => {
-  const width = useBreakpointValue({ base: 420, md: 700 })
+  const width = useBreakpointValue({ base: 420, md: 600, lg: 1000 })
+  const height = useBreakpointValue({ base: 420, lg: 500 })
   const { data, isLoading, error } = useQuery<IDayStatistics[], IApiError>(
     ['reservations', 'statistics', 'hours-of-day'],
     async () => (await api.get(`/reservations/statistics/hours-of-day`)).data
@@ -29,7 +30,7 @@ const TimePreference = () => {
     <Stack width='full' height='full' alignItems='center' overflow='auto'>
       <BarChart
         width={width}
-        height={300}
+        height={height}
         data={formattedData}
         margin={{
           top: 5,
@@ -42,7 +43,6 @@ const TimePreference = () => {
         <XAxis dataKey='name' />
         <YAxis allowDecimals={false} />
         <Tooltip />
-        <Legend />
         <Bar dataKey='Reservations' fill='#68D391' />
       </BarChart>
     </Stack>

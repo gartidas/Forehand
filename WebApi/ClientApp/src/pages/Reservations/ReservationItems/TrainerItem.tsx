@@ -3,6 +3,7 @@ import { Button, ChakraProps, Box, Text, Flex, Stack, Tooltip } from '@chakra-ui
 import { ReactNode } from 'react'
 import { IUserExtended } from '../../../domainTypes'
 import roleColors from '../../../styles/roleColors'
+import useWindowSize from '../../../utils/hooks/useWindowsSize'
 
 interface TrainerItemProps extends ChakraProps {
   trainer: IUserExtended
@@ -20,6 +21,8 @@ interface TrainerItemProps extends ChakraProps {
 }
 
 const TrainerItem = ({ trainer, button, onClick, ...rest }: TrainerItemProps) => {
+  const isDesktop = useWindowSize().height > 1100
+
   return (
     <Stack
       my={1}
@@ -35,13 +38,19 @@ const TrainerItem = ({ trainer, button, onClick, ...rest }: TrainerItemProps) =>
       {...rest}
     >
       <Tooltip label={trainer.bio} backgroundColor='secondary'>
-        <Flex alignItems='center' cursor={onClick ? 'pointer' : 'default'} onClick={onClick}>
-          <Avatar
-            size={'sm'}
-            src={`https://avatars.dicebear.com/api/adventurer-neutral/${trainer.id}.svg`}
-            marginRight={2}
-            border={`2px solid ${roleColors[trainer.role]}`}
-          />
+        <Flex
+          alignItems='center'
+          cursor={onClick && isDesktop ? 'pointer' : 'default'}
+          onClick={isDesktop ? onClick : () => {}}
+        >
+          {isDesktop && (
+            <Avatar
+              size={'sm'}
+              src={`https://avatars.dicebear.com/api/adventurer-neutral/${trainer.id}.svg`}
+              marginRight={2}
+              border={`2px solid ${roleColors[trainer.role]}`}
+            />
+          )}
           <Flex direction='column'>
             <Text>
               {trainer.givenName} {trainer.surname}
@@ -65,7 +74,6 @@ const TrainerItem = ({ trainer, button, onClick, ...rest }: TrainerItemProps) =>
             onClick={button.onClick}
             type={button.type}
             isLoading={button.isLoading}
-            marginLeft={100}
           >
             {button.text}
             {button.icon}

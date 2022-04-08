@@ -14,7 +14,7 @@ const NavButtons = ({ buttons, isMobileNavbar, onClick }: INavButtonsProps) => {
   return (
     <>
       {isMobileNavbar ? (
-        <Stack as={'nav'} spacing={{ base: 0, md: 4 }} display={{ base: 'flex', md: 'none' }}>
+        <Stack as={'nav'} spacing={{ base: 0, lg: 4 }} display={{ base: 'flex', lg: 'none' }}>
           {buttons.map(button => (
             <Button
               key={button.label}
@@ -29,7 +29,7 @@ const NavButtons = ({ buttons, isMobileNavbar, onClick }: INavButtonsProps) => {
           ))}
         </Stack>
       ) : (
-        <HStack as={'nav'} spacing={{ base: 0, md: 4 }} display={{ base: 'none', md: 'flex' }}>
+        <HStack as={'nav'} spacing={{ base: 0, lg: 4 }} display={{ base: 'none', lg: 'flex' }}>
           {buttons.map(button => (
             <Button
               key={button.label}
