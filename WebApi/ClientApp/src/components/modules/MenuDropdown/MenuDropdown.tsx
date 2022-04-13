@@ -16,9 +16,11 @@ import roleColors from '../../../styles/roleColors'
 import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai'
 import { FiSettings } from 'react-icons/fi'
 import CartIcon from '../../elements/CartIcon'
+import { useOrders } from '../../../contextProviders/OrdersProvider'
 
 const MenuDropdown = () => {
   const { currentUser, logout } = useAuthorizedUser()
+  const { clearCart } = useOrders()
   const navigate = useNavigate()
 
   return (
@@ -69,7 +71,12 @@ const MenuDropdown = () => {
             </Flex>
           </MenuItem>
           <MenuDivider />
-          <MenuItem onClick={() => logout()}>
+          <MenuItem
+            onClick={() => {
+              clearCart()
+              logout()
+            }}
+          >
             <Flex width='full' justifyContent='center'>
               <Icon as={AiOutlineLogout} />
             </Flex>
