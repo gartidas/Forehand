@@ -73,7 +73,7 @@ const MenuDropdown = () => {
           <MenuDivider />
           <MenuItem
             onClick={() => {
-              clearCart()
+              clearCart(true)
               logout()
             }}
           >

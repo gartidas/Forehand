@@ -195,7 +195,7 @@ const Cart = () => {
         applyGiftCard(usableGiftCard.id)
         setUsableGiftCard(undefined)
       }
-      clearCart()
+      clearCart(false)
       successToast('Order created successfully.')
     },
     errorCallback: error => apiErrorToast({ data: error, status: 400 })

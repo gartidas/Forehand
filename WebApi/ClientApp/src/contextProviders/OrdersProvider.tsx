@@ -6,6 +6,7 @@ import {
   ISubscriptionCard,
   OrderItemType
 } from '../domainTypes'
+import api from '../api/httpClient'
 
 export const CART_ITEMS = 'FOREHAND.cart_items'
 export const CART_ITEMS_RESERVATIONS = `${CART_ITEMS}.reservations`
@@ -24,7 +25,7 @@ interface IOrdersContextValue {
   addGiftCard: (giftCard: IGiftCard) => void
   addSubscriptionCard: (subscriptionCard: ISubscriptionCard) => void
   removeOrderItem: (orderItemId: string, type: OrderItemType) => void
-  clearCart: () => void
+  clearCart: (isLogout: boolean) => void
 }
 
 const OrdersContext = createContext<IOrdersContextValue>(null!)
@@ -42,6 +43,12 @@ const getSubscriptionCardFromStorage = (key: string) => {
   if (!json) return null
 
   return JSON.parse(json)
+}
+
+const removeReservation = async (reservationId: string) => {
+  try {
+    await api.delete(`/reservations/${reservationId}`)
+  } catch (_) {}
 }
 
 const OrdersProvider: FC = ({ children }) => {
@@ -107,7 +114,8 @@ const OrdersProvider: FC = ({ children }) => {
     }
   }
 
-  const clearCart = () => {
+  const clearCart = (isLogout: boolean) => {
+    isLogout && reservations.forEach(reservation => removeReservation(reservation.id))
     setReservations([])
     setConsumerGoods([])
     setGiftCards([])
