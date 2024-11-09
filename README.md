@@ -1,7 +1,8 @@
 # Forehand
 
 ## Deployed website
-https://forehand.azurewebsites.net/
+~~https://forehand.azurewebsites.net/~~  
+(Backend currently unavailable due to the high cost of hosting)
 
 ### Tech stack:
 
