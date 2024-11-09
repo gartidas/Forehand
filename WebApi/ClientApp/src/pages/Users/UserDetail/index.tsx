@@ -14,6 +14,7 @@ import { useAuthorizedUser } from '../../../contextProviders/AuthProvider'
 import SubscriptionCardBadge from '../../../components/elements/SubscriptionCardBadge'
 import { fetchSubscriptionCard } from '../../../services/authService'
 import { useState } from 'react'
+import { getAvatarUrl } from '../../../utils/getAvatarUrl'
 
 const UserDetail = () => {
   const navigate = useNavigate()
@@ -73,7 +74,7 @@ const UserDetail = () => {
         <Flex justify={'center'} mt={-12}>
           <Avatar
             size={'xl'}
-            src={`https://avatars.dicebear.com/api/adventurer-neutral/${data.id}.svg`}
+            src={getAvatarUrl(data.id)}
             marginRight={2}
             border={`2px solid ${roleColors[data.role]}`}
           />

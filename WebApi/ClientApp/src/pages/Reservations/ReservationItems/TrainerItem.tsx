@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import { IUserExtended } from '../../../domainTypes'
 import roleColors from '../../../styles/roleColors'
 import useWindowSize from '../../../utils/hooks/useWindowsSize'
+import { getAvatarUrl } from '../../../utils/getAvatarUrl'
 
 interface TrainerItemProps extends ChakraProps {
   trainer: IUserExtended
@@ -46,7 +47,7 @@ const TrainerItem = ({ trainer, button, onClick, ...rest }: TrainerItemProps) =>
           {isDesktop && (
             <Avatar
               size={'sm'}
-              src={`https://avatars.dicebear.com/api/adventurer-neutral/${trainer.id}.svg`}
+              src={getAvatarUrl(trainer.id)}
               marginRight={2}
               border={`2px solid ${roleColors[trainer.role]}`}
             />

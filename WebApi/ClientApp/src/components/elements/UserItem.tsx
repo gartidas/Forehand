@@ -9,6 +9,7 @@ import api from '../../api/httpClient'
 import { apiErrorToast } from '../../services/toastService'
 import { IApiError } from '../../api/types'
 import { Link } from 'react-router-dom'
+import { getAvatarUrl } from '../../utils/getAvatarUrl'
 
 interface UserItemProps extends ChakraProps {
   user: IUser
@@ -49,7 +50,7 @@ const UserItem = ({ user, onButtonClick, ...rest }: UserItemProps) => {
         <Flex alignItems='center'>
           <Avatar
             size={'sm'}
-            src={`https://avatars.dicebear.com/api/adventurer-neutral/${user.id}.svg`}
+            src={getAvatarUrl(user.id)}
             marginRight={2}
             border={`2px solid ${roleColors[user.role]}`}
           />

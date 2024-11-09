@@ -5,6 +5,7 @@ import { useAuthorizedUser } from '../../contextProviders/AuthProvider'
 import { Role } from '../../domainTypes'
 import { toFormattedDate } from '../../utils'
 import { roundToHalf } from '../../pages/Reservations/utils'
+import { getAvatarUrl } from '../../utils/getAvatarUrl'
 
 const ReservationItem = ({ event }: EventContentArg) => {
   const { currentUser } = useAuthorizedUser()
@@ -32,7 +33,7 @@ const ReservationItem = ({ event }: EventContentArg) => {
           <Stack align='center'>
             <Avatar
               size={'sm'}
-              src={`https://avatars.dicebear.com/api/adventurer-neutral/${currentUser.id}.svg`}
+              src={getAvatarUrl(currentUser.id)}
               border={`2px solid ${roleColors[Role.BasicUser]}`}
             />
             <Heading
@@ -67,9 +68,7 @@ const ReservationItem = ({ event }: EventContentArg) => {
         <Stack align='center'>
           <Avatar
             size={'sm'}
-            src={`https://avatars.dicebear.com/api/adventurer-neutral/${
-              extendedProps!.customer
-            }.svg`}
+            src={getAvatarUrl(extendedProps!.customer)}
             border={`2px solid ${roleColors[Role.BasicUser]}`}
           />
         </Stack>

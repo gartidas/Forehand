@@ -17,6 +17,7 @@ import { AiOutlineLogout, AiOutlineUser } from 'react-icons/ai'
 import { FiSettings } from 'react-icons/fi'
 import CartIcon from '../../elements/CartIcon'
 import { useOrders } from '../../../contextProviders/OrdersProvider'
+import { getAvatarUrl } from '../../../utils/getAvatarUrl'
 
 const MenuDropdown = () => {
   const { currentUser, logout } = useAuthorizedUser()
@@ -41,7 +42,7 @@ const MenuDropdown = () => {
           <Flex alignItems='center'>
             <Avatar
               size={'sm'}
-              src={`https://avatars.dicebear.com/api/adventurer-neutral/${currentUser.id}.svg`}
+              src={getAvatarUrl(currentUser.id)}
               marginRight={2}
               border={`2px solid ${roleColors[currentUser.role]}`}
             />
