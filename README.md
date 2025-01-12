@@ -1,7 +1,7 @@
 # Forehand
 
 ## Deployed website
-<strike>[Forehand](https://forehand.azurewebsites.net/)<strike>
+<strike>[Forehand](https://forehand.azurewebsites.net/)</strike>
 *Site down due to high cost of hosting*
 
 ### Tech stack:
